@@ -6,21 +6,23 @@
 
 /* Inbox Styles */
 .inbox-card {
-    background-color: white;
+    background-color: #222230; /* Dark background */
     border-radius: 15px;
     overflow: hidden;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 5px 15px rgba(156, 39, 176, 0.15); /* Purple shadow */
     margin-bottom: 30px;
     display: flex;
     flex-direction: column;
     height: calc(100vh - 250px);
     min-height: 500px;
+    border: 1px solid rgba(156, 39, 176, 0.2); /* Purple border */
 }
 
 .inbox-header {
     padding: 20px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    background-color: #f8f9fc;
+    border-bottom: 1px solid rgba(156, 39, 176, 0.2); /* Purple border */
+    background-color: #2a2a3a; /* Slightly lighter than background */
+    color: var(--primary-color); /* Purple text */
 }
 
 .inbox-header h2 {

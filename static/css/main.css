@@ -1,21 +1,21 @@
 /* Main.css - Global styles for the RecruitMe platform */
 
 :root {
-    /* Colors */
-    --primary-color: #4e73df;
-    --primary-dark: #3756a5;
+    /* Colors - Updated to black and purple theme */
+    --primary-color: #9c27b0; /* Purple */
+    --primary-dark: #7b1fa2;  /* Dark Purple */
     --secondary-color: #6c757d;
     --success-color: #1cc88a;
     --info-color: #36b9cc;
     --warning-color: #f6c23e;
     --danger-color: #e74a3b;
     --light-color: #f8f9fc;
-    --dark-color: #2d3748;
+    --dark-color: #121212;    /* Black */
     
     /* Glass effect variables */
-    --glass-bg: rgba(255, 255, 255, 0.15);
-    --glass-border: rgba(255, 255, 255, 0.2);
-    --glass-shadow: rgba(0, 0, 0, 0.1);
+    --glass-bg: rgba(156, 39, 176, 0.1);  /* Purple tint */
+    --glass-border: rgba(156, 39, 176, 0.2); /* Purple border */
+    --glass-shadow: rgba(0, 0, 0, 0.2);
     
     /* Font settings */
     --font-primary: 'Nunito', 'Segoe UI', Roboto, Arial, sans-serif;
@@ -25,8 +25,8 @@
 /* Base Styles */
 body {
     font-family: var(--font-primary);
-    color: var(--dark-color);
-    background-color: #f5f7fa;
+    color: var(--light-color);
+    background-color: #18181f; /* Dark background */
     line-height: 1.6;
     overflow-x: hidden;
     position: relative;
@@ -54,8 +54,8 @@ body {
 
 /* Navigation */
 .navbar {
-    background-color: white;
-    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    background-color: var(--dark-color); /* Black background */
+    box-shadow: 0 2px 15px rgba(156, 39, 176, 0.3); /* Purple shadow */
     padding: 15px 0;
     transition: all 0.3s ease;
 }
@@ -76,7 +76,7 @@ body {
 }
 
 .navbar-light .navbar-nav .nav-link {
-    color: var(--secondary-color);
+    color: var(--light-color);
     font-weight: 600;
     padding: 10px 15px;
     border-radius: 5px;
@@ -86,7 +86,8 @@ body {
 .navbar-light .navbar-nav .nav-link:hover,
 .navbar-light .navbar-nav .nav-link.active {
     color: var(--primary-color);
-    background-color: rgba(78, 115, 223, 0.1);
+    background-color: rgba(156, 39, 176, 0.15);
+    text-shadow: 0 0 5px rgba(156, 39, 176, 0.5);
 }
 
 .navbar-light .navbar-nav .register-btn {
@@ -131,14 +132,15 @@ body {
 
 /* Footer */
 .footer {
-    background-color: white;
-    box-shadow: 0 -2px 15px rgba(0, 0, 0, 0.05);
+    background-color: var(--dark-color);
+    box-shadow: 0 -2px 15px rgba(156, 39, 176, 0.2);
     padding: 30px 0 10px;
     margin-top: auto;
+    border-top: 1px solid rgba(156, 39, 176, 0.3);
 }
 
 .footer h5 {
-    color: var(--dark-color);
+    color: var(--primary-color);
     font-weight: 700;
     margin-bottom: 15px;
 }
@@ -226,13 +228,22 @@ body {
 .form-control, .form-select {
     border-radius: 5px;
     padding: 10px 15px;
-    border: 1px solid #d9dbe9;
+    border: 1px solid rgba(156, 39, 176, 0.3);
+    background-color: #2a2a3a;
+    color: var(--light-color);
     transition: all 0.3s ease;
 }
 
 .form-control:focus, .form-select:focus {
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.25);
+    background-color: #333342;
+    box-shadow: 0 0 0 0.25rem rgba(156, 39, 176, 0.25);
+    color: white;
+}
+
+/* Change placeholder color */
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.5);
 }
 
 /* Animations */
@@ -323,19 +334,23 @@ body {
 .card {
     border: none;
     border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 5px 15px rgba(156, 39, 176, 0.15);
     overflow: hidden;
     transition: all 0.3s ease;
+    background-color: #222230; /* Dark card background */
+    color: var(--light-color);
 }
 
 .card:hover {
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 30px rgba(156, 39, 176, 0.25);
+    transform: translateY(-5px);
 }
 
 .card-header {
-    background-color: white;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    background-color: #2a2a3a; /* Slightly lighter than card background */
+    border-bottom: 1px solid rgba(156, 39, 176, 0.2); /* Purple border */
     padding: 20px;
+    color: var(--primary-color); /* Purple text */
 }
 
 .card-body {
@@ -374,14 +389,18 @@ body {
 /* Page Header */
 .page-header {
     margin-bottom: 30px;
+    border-left: 4px solid var(--primary-color);
+    padding-left: 20px;
 }
 
 .page-header h2 {
     font-weight: 700;
-    color: var(--dark-color);
+    color: var(--primary-color); /* Purple text */
     margin-bottom: 10px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .page-header p {
-    color: var(--secondary-color);
+    color: var(--light-color);
+    opacity: 0.8;
 }
