@@ -33,7 +33,8 @@
 
 .inbox-search {
     padding: 15px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid rgba(156, 39, 176, 0.1); /* Purple border */
+    background-color: #2a2a3a; /* Matching the header */
 }
 
 .conversation-list {
@@ -43,17 +44,18 @@
 
 .conversation-item {
     padding: 15px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid rgba(156, 39, 176, 0.1); /* Purple border */
     display: flex;
     align-items: center;
     cursor: pointer;
     transition: all 0.3s ease;
     text-decoration: none;
-    color: inherit;
+    color: var(--light-color); /* Light text color */
 }
 
 .conversation-item:hover, .conversation-item.active {
-    background-color: #f8f9fc;
+    background-color: rgba(156, 39, 176, 0.1); /* Purple highlight */
+    border-left: 3px solid var(--primary-color); /* Purple accent border */
 }
 
 .conversation-avatar {
@@ -95,7 +97,7 @@
 }
 
 .conversation-message {
-    color: var(--secondary-color);
+    color: rgba(255, 255, 255, 0.6); /* Light gray text */
     font-size: 0.9rem;
     white-space: nowrap;
     overflow: hidden;
@@ -104,7 +106,7 @@
 
 .conversation-time {
     font-size: 0.8rem;
-    color: var(--secondary-color);
+    color: rgba(156, 39, 176, 0.7); /* Purple text */
     white-space: nowrap;
     margin-left: 10px;
 }
@@ -124,23 +126,25 @@
 
 /* Conversation Styles */
 .conversation-card {
-    background-color: white;
+    background-color: #222230; /* Dark background */
     border-radius: 15px;
     overflow: hidden;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 5px 15px rgba(156, 39, 176, 0.15); /* Purple shadow */
     margin-bottom: 30px;
     display: flex;
     flex-direction: column;
     height: calc(100vh - 250px);
     min-height: 500px;
+    border: 1px solid rgba(156, 39, 176, 0.2); /* Purple border */
 }
 
 .conversation-header {
     padding: 15px 20px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    background-color: #f8f9fc;
+    border-bottom: 1px solid rgba(156, 39, 176, 0.2); /* Purple border */
+    background-color: #2a2a3a; /* Slightly lighter than background */
     display: flex;
     align-items: center;
+    color: var(--primary-color); /* Purple text */
 }
 
 .conversation-header .avatar {
@@ -179,6 +183,7 @@
     flex-grow: 1;
     display: flex;
     flex-direction: column;
+    background-color: #1a1a25; /* Darker than card background */
 }
 
 .message {
@@ -187,6 +192,7 @@
     border-radius: 15px;
     margin-bottom: 15px;
     position: relative;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .message-sent {
@@ -194,13 +200,20 @@
     background-color: var(--primary-color);
     color: white;
     border-bottom-right-radius: 0;
+    animation: messageAppear 0.3s ease;
 }
 
 .message-received {
     align-self: flex-start;
-    background-color: #f1f3f9;
-    color: var(--dark-color);
+    background-color: #2a2a3a; /* Dark message background */
+    color: var(--light-color);
     border-bottom-left-radius: 0;
+    animation: messageAppear 0.3s ease;
+}
+
+@keyframes messageAppear {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .message-time {
@@ -216,7 +229,8 @@
 
 .conversation-footer {
     padding: 15px;
-    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    border-top: 1px solid rgba(156, 39, 176, 0.2); /* Purple border */
+    background-color: #2a2a3a; /* Slightly lighter than card background */
 }
 
 .message-form {
@@ -228,8 +242,21 @@
     flex-grow: 1;
     border-radius: 30px;
     padding: 10px 20px;
-    border: 1px solid #e9ecef;
+    border: 1px solid rgba(156, 39, 176, 0.3); /* Purple border */
+    background-color: #333342; /* Dark input background */
+    color: var(--light-color);
     resize: none;
+    transition: all 0.3s ease;
+}
+
+.message-input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(156, 39, 176, 0.2);
+    outline: none;
+}
+
+.message-input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
 }
 
 .message-submit {
@@ -255,14 +282,14 @@
     margin: 20px 0;
     display: flex;
     align-items: center;
-    color: var(--secondary-color);
+    color: rgba(156, 39, 176, 0.6); /* Purple text */
     font-size: 0.8rem;
 }
 
 .date-divider::before, .date-divider::after {
     content: "";
     flex-grow: 1;
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: rgba(156, 39, 176, 0.2); /* Purple line */
     height: 1px;
     margin: 0 10px;
 }
@@ -273,15 +300,17 @@
     align-items: center;
     justify-content: center;
     height: 100%;
-    color: var(--secondary-color);
+    color: var(--light-color);
     text-align: center;
     padding: 20px;
+    background-color: #1a1a25; /* Darker than card background */
 }
 
 .empty-conversation i {
     font-size: 3rem;
     margin-bottom: 20px;
-    opacity: 0.3;
+    color: var(--primary-color); /* Purple icon */
+    opacity: 0.5;
 }
 
 /* Responsive Styles */

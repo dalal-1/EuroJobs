@@ -197,31 +197,38 @@ body {
 }
 
 .features-section {
-    background-color: white;
+    background-color: #222230; /* Dark background */
     padding: 60px 0;
+    border-top: 1px solid rgba(156, 39, 176, 0.2); /* Purple border */
+    border-bottom: 1px solid rgba(156, 39, 176, 0.2); /* Purple border */
 }
 
 .feature-card {
     padding: 30px;
     border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 5px 15px rgba(156, 39, 176, 0.1); /* Purple shadow */
     transition: all 0.3s ease;
-    background-color: white;
+    background-color: #2a2a3a; /* Slightly lighter than background */
+    color: var(--light-color); /* Light text */
+    border: 1px solid rgba(156, 39, 176, 0.15); /* Purple border */
 }
 
 .feature-card:hover {
     transform: translateY(-10px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 15px 30px rgba(156, 39, 176, 0.2); /* Stronger purple shadow */
+    border-color: rgba(156, 39, 176, 0.3); /* Stronger border */
 }
 
 .feature-icon {
-    color: var(--primary-color);
+    color: var(--primary-color); /* Purple */
     text-align: center;
+    text-shadow: 0 0 10px rgba(156, 39, 176, 0.5); /* Purple glow */
 }
 
 .cta-section {
-    background-color: #f8f9fc;
+    background-color: #18181f; /* Dark background */
     padding: 60px 0;
+    color: var(--light-color); /* Light text */
 }
 
 /* Form Elements */
