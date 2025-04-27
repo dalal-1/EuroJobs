@@ -113,14 +113,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 emojiPicker.style.position = 'absolute';
                 emojiPicker.style.bottom = '70px';
                 emojiPicker.style.right = '20px';
-                emojiPicker.style.backgroundColor = 'white';
-                emojiPicker.style.border = '1px solid #e9ecef';
+                emojiPicker.style.backgroundColor = '#2a2a3a';
+                emojiPicker.style.border = '1px solid rgba(156, 39, 176, 0.3)';
                 emojiPicker.style.borderRadius = '10px';
                 emojiPicker.style.padding = '10px';
                 emojiPicker.style.display = 'grid';
                 emojiPicker.style.gridTemplateColumns = 'repeat(5, 1fr)';
                 emojiPicker.style.gap = '5px';
-                emojiPicker.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.1)';
+                emojiPicker.style.boxShadow = '0 5px 15px rgba(156, 39, 176, 0.25)';
                 emojiPicker.style.zIndex = '1000';
                 
                 // Add emojis
@@ -139,11 +139,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     emojiButton.style.transition = 'all 0.2s ease';
                     
                     emojiButton.addEventListener('mouseenter', function() {
-                        this.style.backgroundColor = '#f8f9fc';
+                        this.style.backgroundColor = 'rgba(156, 39, 176, 0.2)';
+                        this.style.transform = 'scale(1.1)';
                     });
                     
                     emojiButton.addEventListener('mouseleave', function() {
                         this.style.backgroundColor = 'transparent';
+                        this.style.transform = 'scale(1)';
                     });
                     
                     emojiButton.addEventListener('click', function() {
