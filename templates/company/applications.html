@@ -1,0 +1,335 @@
+{% extends "layout.html" %}
+
+{% block title %}Applications - RecruitMe{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="applications-container">
+    <div class="page-header mb-4">
+        <h2><i class="fas fa-file-alt"></i> Manage Applications</h2>
+        <p class="text-muted">
+            Review and respond to all job applications in one place
+        </p>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-12">
+            <div class="profile-card">
+                {% if applications %}
+                    <div class="application-filters mb-3 p-3 border-bottom">
+                        <div class="row align-items-center">
+                            <div class="col-md-4">
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-outline-primary active filter-btn" data-filter="all">
+                                        All
+                                    </button>
+                                    <button type="button" class="btn btn-outline-warning filter-btn" data-filter="pending">
+                                        Pending
+                                    </button>
+                                    <button type="button" class="btn btn-outline-info filter-btn" data-filter="reviewing">
+                                        Reviewing
+                                    </button>
+                                    <button type="button" class="btn btn-outline-success filter-btn" data-filter="accepted">
+                                        Accepted
+                                    </button>
+                                    <button type="button" class="btn btn-outline-danger filter-btn" data-filter="rejected">
+                                        Rejected
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <select class="form-select" id="job-filter">
+                                    <option value="all">All Jobs</option>
+                                    {% for job in applications|map(attribute='job_post')|unique(attribute='id') %}
+                                        <option value="{{ job.id }}">{{ job.title }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="Search applicants..." id="search-applications">
+                                    <button class="btn btn-outline-secondary" type="button">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="applications-list">
+                        <div class="table-responsive">
+                            <table class="table table-hover application-table">
+                                <thead>
+                                    <tr>
+                                        <th>Applicant</th>
+                                        <th>Job Position</th>
+                                        <th>Applied On</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for application in applications %}
+                                        <tr data-status="{{ application.status }}" data-job-id="{{ application.job_post.id }}">
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="applicant-avatar me-2">
+                                                        {% if application.student.profile_picture %}
+                                                            <img src="{{ url_for('static', filename='uploads/' + application.student.profile_picture) }}" 
+                                                                 alt="Profile" class="rounded-circle" width="40" height="40">
+                                                        {% else %}
+                                                            <div class="avatar-placeholder rounded-circle d-flex align-items-center justify-content-center"
+                                                                 style="width: 40px; height: 40px; background-color: #4e73df; color: white;">
+                                                                {{ application.student.first_name[0] }}{{ application.student.last_name[0] }}
+                                                            </div>
+                                                        {% endif %}
+                                                    </div>
+                                                    <div>
+                                                        <div class="fw-bold">{{ application.student.first_name }} {{ application.student.last_name }}</div>
+                                                        <div class="text-muted small">{{ application.student.user.email }}</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <a href="{{ url_for('company.manage_job', job_id=application.job_post.id) }}">
+                                                    {{ application.job_post.title }}
+                                                </a>
+                                            </td>
+                                            <td>{{ application.created_at.strftime('%Y-%m-%d') }}</td>
+                                            <td>
+                                                <span class="badge 
+                                                    {% if application.status == 'pending' %}bg-warning
+                                                    {% elif application.status == 'reviewing' %}bg-info
+                                                    {% elif application.status == 'accepted' %}bg-success
+                                                    {% elif application.status == 'rejected' %}bg-danger
+                                                    {% endif %}">
+                                                    {{ application.status.capitalize() }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn btn-sm btn-outline-primary dropdown-toggle" 
+                                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                                        Update Status
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                        <li>
+                                                            <form action="{{ url_for('company.update_application_status', application_id=application.id) }}" method="POST">
+                                                                <input type="hidden" name="status" value="pending">
+                                                                <button type="submit" class="dropdown-item" {% if application.status == 'pending' %}disabled{% endif %}>
+                                                                    <i class="fas fa-clock text-warning me-2"></i> Mark as Pending
+                                                                </button>
+                                                            </form>
+                                                        </li>
+                                                        <li>
+                                                            <form action="{{ url_for('company.update_application_status', application_id=application.id) }}" method="POST">
+                                                                <input type="hidden" name="status" value="reviewing">
+                                                                <button type="submit" class="dropdown-item" {% if application.status == 'reviewing' %}disabled{% endif %}>
+                                                                    <i class="fas fa-search text-info me-2"></i> Mark as Reviewing
+                                                                </button>
+                                                            </form>
+                                                        </li>
+                                                        <li>
+                                                            <form action="{{ url_for('company.update_application_status', application_id=application.id) }}" method="POST">
+                                                                <input type="hidden" name="status" value="accepted">
+                                                                <button type="submit" class="dropdown-item" {% if application.status == 'accepted' %}disabled{% endif %}>
+                                                                    <i class="fas fa-check text-success me-2"></i> Accept Application
+                                                                </button>
+                                                            </form>
+                                                        </li>
+                                                        <li>
+                                                            <form action="{{ url_for('company.update_application_status', application_id=application.id) }}" method="POST">
+                                                                <input type="hidden" name="status" value="rejected">
+                                                                <button type="submit" class="dropdown-item" {% if application.status == 'rejected' %}disabled{% endif %}>
+                                                                    <i class="fas fa-times text-danger me-2"></i> Reject Application
+                                                                </button>
+                                                            </form>
+                                                        </li>
+                                                    </ul>
+                                                    
+                                                    <button type="button" class="btn btn-sm btn-outline-secondary view-details-btn" 
+                                                            data-bs-toggle="modal" data-bs-target="#applicationModal{{ application.id }}">
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                    
+                                                    <a href="{{ url_for('messages.new_conversation', user_id=application.student.user.id) }}" 
+                                                       class="btn btn-sm btn-outline-primary">
+                                                        <i class="fas fa-envelope"></i>
+                                                    </a>
+                                                </div>
+                                                
+                                                <!-- Application Details Modal -->
+                                                <div class="modal fade" id="applicationModal{{ application.id }}" tabindex="-1" 
+                                                     aria-labelledby="applicationModalLabel{{ application.id }}" aria-hidden="true">
+                                                    <div class="modal-dialog modal-lg">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="applicationModalLabel{{ application.id }}">
+                                                                    Application Details
+                                                                </h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <div class="row">
+                                                                    <div class="col-md-4">
+                                                                        <div class="text-center mb-3">
+                                                                            {% if application.student.profile_picture %}
+                                                                                <img src="{{ url_for('static', filename='uploads/' + application.student.profile_picture) }}" 
+                                                                                     alt="Profile" class="img-fluid rounded-circle" style="width: 120px; height: 120px; object-fit: cover;">
+                                                                            {% else %}
+                                                                                <div class="avatar-placeholder rounded-circle d-flex align-items-center justify-content-center mx-auto"
+                                                                                     style="width: 120px; height: 120px; background-color: #4e73df; color: white; font-size: 2.5rem;">
+                                                                                    {{ application.student.first_name[0] }}{{ application.student.last_name[0] }}
+                                                                                </div>
+                                                                            {% endif %}
+                                                                        </div>
+                                                                        <h5 class="text-center">{{ application.student.first_name }} {{ application.student.last_name }}</h5>
+                                                                        <p class="text-center text-muted">{{ application.student.user.email }}</p>
+                                                                        
+                                                                        {% if application.student.phone %}
+                                                                            <p class="text-center">
+                                                                                <i class="fas fa-phone me-2"></i>{{ application.student.phone }}
+                                                                            </p>
+                                                                        {% endif %}
+                                                                        
+                                                                        {% if application.student.website %}
+                                                                            <p class="text-center">
+                                                                                <i class="fas fa-globe me-2"></i>
+                                                                                <a href="{{ application.student.website }}" target="_blank">{{ application.student.website }}</a>
+                                                                            </p>
+                                                                        {% endif %}
+                                                                        
+                                                                        {% if application.student.cv_file %}
+                                                                            <div class="text-center mt-3">
+                                                                                <a href="{{ url_for('static', filename='uploads/' + application.student.cv_file) }}" 
+                                                                                   class="btn btn-outline-primary btn-sm" target="_blank">
+                                                                                    <i class="fas fa-file-pdf me-2"></i> View CV
+                                                                                </a>
+                                                                            </div>
+                                                                        {% endif %}
+                                                                    </div>
+                                                                    <div class="col-md-8">
+                                                                        <h5>Cover Letter</h5>
+                                                                        <div class="cover-letter p-3 bg-light rounded mb-4">
+                                                                            <p>{{ application.cover_letter }}</p>
+                                                                        </div>
+                                                                        
+                                                                        {% if application.student.education %}
+                                                                            <h5>Education</h5>
+                                                                            <div class="education p-3 bg-light rounded mb-4">
+                                                                                <p>{{ application.student.education }}</p>
+                                                                            </div>
+                                                                        {% endif %}
+                                                                        
+                                                                        {% if application.student.skills.count() > 0 %}
+                                                                            <h5>Skills</h5>
+                                                                            <div class="skills mb-4">
+                                                                                {% for skill in application.student.skills %}
+                                                                                    <span class="badge bg-primary me-2 mb-2 p-2">
+                                                                                        {{ skill.name }} ({{ skill.level }}/5)
+                                                                                    </span>
+                                                                                {% endfor %}
+                                                                            </div>
+                                                                        {% endif %}
+                                                                        
+                                                                        {% if application.student.bio %}
+                                                                            <h5>About</h5>
+                                                                            <div class="bio p-3 bg-light rounded">
+                                                                                <p>{{ application.student.bio }}</p>
+                                                                            </div>
+                                                                        {% endif %}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                                <a href="{{ url_for('messages.new_conversation', user_id=application.student.user.id) }}" 
+                                                                   class="btn btn-primary">
+                                                                    <i class="fas fa-envelope me-2"></i> Message Candidate
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <div class="empty-state">
+                            <i class="fas fa-file-alt fa-3x mb-3"></i>
+                            <h3>No applications yet</h3>
+                            <p class="text-muted">You haven't received any job applications yet.</p>
+                            <a href="{{ url_for('company.create_job') }}" class="btn btn-primary mt-3">
+                                <i class="fas fa-plus"></i> Post a New Job
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/profile.js') }}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Status filter
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const jobFilter = document.getElementById('job-filter');
+        const searchInput = document.getElementById('search-applications');
+        const applicationRows = document.querySelectorAll('.application-table tbody tr');
+        
+        // Function to apply all filters
+        function applyFilters() {
+            const statusFilter = document.querySelector('.filter-btn.active').getAttribute('data-filter');
+            const jobFilterValue = jobFilter.value;
+            const searchTerm = searchInput.value.toLowerCase();
+            
+            applicationRows.forEach(row => {
+                const status = row.getAttribute('data-status');
+                const jobId = row.getAttribute('data-job-id');
+                const applicantName = row.querySelector('td:first-child').textContent.toLowerCase();
+                
+                const statusMatch = statusFilter === 'all' || status === statusFilter;
+                const jobMatch = jobFilterValue === 'all' || jobId === jobFilterValue;
+                const searchMatch = !searchTerm || applicantName.includes(searchTerm);
+                
+                if (statusMatch && jobMatch && searchMatch) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+        
+        // Status filter click handler
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                applyFilters();
+            });
+        });
+        
+        // Job filter change handler
+        if (jobFilter) {
+            jobFilter.addEventListener('change', applyFilters);
+        }
+        
+        // Search input handler
+        if (searchInput) {
+            searchInput.addEventListener('input', applyFilters);
+        }
+    });
+</script>
+{% endblock %}

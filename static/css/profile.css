@@ -1,0 +1,370 @@
+/* Profile.css - Styles for user profiles */
+
+.profile-container {
+    padding: 20px 0;
+}
+
+.profile-card {
+    background-color: white;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.profile-header {
+    padding: 30px;
+    text-align: center;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    background-color: #f8f9fc;
+}
+
+.profile-img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    overflow: hidden;
+    border: 5px solid white;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.profile-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-initials {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    background-color: var(--primary-color);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-weight: 700;
+    border: 5px solid white;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.profile-name {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+    color: var(--dark-color);
+}
+
+.profile-email {
+    color: var(--secondary-color);
+    margin-bottom: 20px;
+}
+
+.profile-actions {
+    margin-top: 20px;
+}
+
+.profile-body {
+    padding: 30px;
+}
+
+.profile-section {
+    margin-bottom: 25px;
+}
+
+.profile-section:last-child {
+    margin-bottom: 0;
+}
+
+.profile-section h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: var(--dark-color);
+    display: flex;
+    align-items: center;
+}
+
+.profile-section h3 i {
+    margin-right: 10px;
+    color: var(--primary-color);
+}
+
+.profile-section p {
+    margin-bottom: 10px;
+    line-height: 1.7;
+}
+
+/* Company Profile */
+.company-header {
+    padding: 30px;
+}
+
+.company-logo {
+    width: 120px;
+    height: 120px;
+    border-radius: 15px;
+    margin: 0 auto 20px;
+    overflow: hidden;
+    border: 5px solid white;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.company-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.company-name {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+    color: var(--dark-color);
+}
+
+.company-industry {
+    color: var(--secondary-color);
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+
+.company-details {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.company-details li {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.company-details li i {
+    color: var(--primary-color);
+    margin-right: 10px;
+    width: 20px;
+}
+
+/* Stats Cards */
+.stats-cards {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.stat-card {
+    background-color: #f8f9fc;
+    border-radius: 10px;
+    padding: 15px;
+    width: 45%;
+    min-width: 120px;
+    text-align: center;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.03);
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.08);
+}
+
+.stat-icon {
+    font-size: 1.8rem;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.stat-info h4 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+    color: var(--dark-color);
+}
+
+.stat-info p {
+    color: var(--secondary-color);
+    margin-bottom: 0;
+    font-size: 0.9rem;
+}
+
+/* Job Listings in Company Profile */
+.job-listings {
+    margin-top: 20px;
+}
+
+.job-listings .job-card {
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.03);
+    transition: all 0.3s ease;
+    background-color: #f8f9fc;
+}
+
+.job-listings .job-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.08);
+}
+
+.job-listings .job-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+}
+
+.job-listings .job-title {
+    font-weight: 700;
+    margin-bottom: 0;
+    color: var(--dark-color);
+}
+
+.job-listings .job-status {
+    display: flex;
+    align-items: center;
+}
+
+.job-listings .job-details {
+    margin-bottom: 15px;
+}
+
+.job-listings .job-details p {
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    color: var(--secondary-color);
+}
+
+.job-listings .job-details p i {
+    width: 20px;
+    margin-right: 10px;
+    color: var(--primary-color);
+}
+
+.job-listings .job-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* Skills Section */
+.skill-card {
+    background-color: #f8f9fc;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+}
+
+.skill-card:hover {
+    background-color: #f1f3f9;
+}
+
+.skill-level {
+    margin-top: 10px;
+}
+
+.skill-level .progress {
+    height: 8px;
+    background-color: #e9ecef;
+    border-radius: 5px;
+}
+
+.skill-level .progress-bar {
+    background-color: var(--primary-color);
+    border-radius: 5px;
+}
+
+.skill-level-text {
+    text-align: right;
+    font-size: 0.8rem;
+    color: var(--secondary-color);
+    margin-top: 5px;
+}
+
+/* Edit Profile */
+.profile-edit-container {
+    padding: 20px 0;
+}
+
+.form-actions {
+    margin-top: 30px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.skill-level-indicator {
+    font-size: 0.8rem;
+    color: var(--secondary-color);
+    margin-top: 5px;
+}
+
+.current-picture, .current-logo, .current-cv {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: #f8f9fc;
+    border-radius: 5px;
+}
+
+/* Applications */
+.applications-container {
+    padding: 20px 0;
+}
+
+.application-filters {
+    margin-bottom: 20px;
+}
+
+.application-table tr[data-status="pending"] {
+    background-color: rgba(246, 194, 62, 0.1);
+}
+
+.application-table tr[data-status="reviewing"] {
+    background-color: rgba(54, 185, 204, 0.1);
+}
+
+.application-table tr[data-status="accepted"] {
+    background-color: rgba(28, 200, 138, 0.1);
+}
+
+.application-table tr[data-status="rejected"] {
+    background-color: rgba(231, 74, 59, 0.1);
+}
+
+@media (max-width: 768px) {
+    .stats-cards {
+        flex-direction: column;
+    }
+    
+    .stat-card {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+    
+    .job-listings .job-header {
+        flex-direction: column;
+    }
+    
+    .job-listings .job-status {
+        margin-top: 10px;
+    }
+    
+    .job-listings .job-actions {
+        flex-wrap: wrap;
+    }
+    
+    .job-listings .job-actions .btn {
+        margin-bottom: 5px;
+    }
+}

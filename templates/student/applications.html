@@ -1,0 +1,148 @@
+{% extends "layout.html" %}
+
+{% block title %}My Applications - RecruitMe{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="applications-container">
+    <div class="page-header mb-4">
+        <h2><i class="fas fa-briefcase"></i> My Applications</h2>
+        <p class="text-muted">
+            Track the status of all your job applications in one place.
+        </p>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-12">
+            <div class="profile-card">
+                {% if applications %}
+                    <div class="application-filters mb-3">
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-outline-primary active filter-btn" data-filter="all">
+                                All
+                            </button>
+                            <button type="button" class="btn btn-outline-warning filter-btn" data-filter="pending">
+                                Pending
+                            </button>
+                            <button type="button" class="btn btn-outline-info filter-btn" data-filter="reviewing">
+                                Reviewing
+                            </button>
+                            <button type="button" class="btn btn-outline-success filter-btn" data-filter="accepted">
+                                Accepted
+                            </button>
+                            <button type="button" class="btn btn-outline-danger filter-btn" data-filter="rejected">
+                                Rejected
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="applications-list">
+                        <div class="table-responsive">
+                            <table class="table table-hover application-table">
+                                <thead>
+                                    <tr>
+                                        <th>Job Title</th>
+                                        <th>Company</th>
+                                        <th>Status</th>
+                                        <th>Applied On</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for application in applications %}
+                                        <tr data-status="{{ application.status }}">
+                                            <td>
+                                                <a href="{{ url_for('jobs.detail', job_id=application.job_post.id) }}">
+                                                    {{ application.job_post.title }}
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a href="{{ url_for('jobs.company_jobs', company_id=application.job_post.company.id) }}">
+                                                    {{ application.job_post.company.name }}
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <span class="badge 
+                                                    {% if application.status == 'pending' %}bg-warning
+                                                    {% elif application.status == 'reviewing' %}bg-info
+                                                    {% elif application.status == 'accepted' %}bg-success
+                                                    {% elif application.status == 'rejected' %}bg-danger
+                                                    {% endif %}">
+                                                    {{ application.status.capitalize() }}
+                                                </span>
+                                            </td>
+                                            <td>{{ application.created_at.strftime('%Y-%m-%d') }}</td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <a href="{{ url_for('messages.new_conversation', user_id=application.job_post.company.user_id) }}" 
+                                                       class="btn btn-sm btn-outline-primary" title="Message Company">
+                                                        <i class="fas fa-envelope"></i>
+                                                    </a>
+                                                    {% if application.status == 'pending' %}
+                                                        <form action="{{ url_for('student.withdraw_application', application_id=application.id) }}" 
+                                                              method="POST" class="d-inline"
+                                                              onsubmit="return confirm('Are you sure you want to withdraw this application?');">
+                                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Withdraw Application">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        </form>
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <div class="empty-state">
+                            <i class="fas fa-briefcase fa-3x mb-3"></i>
+                            <h3>No applications yet</h3>
+                            <p class="text-muted">You haven't applied to any jobs.</p>
+                            <a href="{{ url_for('jobs.listing') }}" class="btn btn-primary mt-3">
+                                <i class="fas fa-search"></i> Browse Jobs
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/profile.js') }}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const applications = document.querySelectorAll('.application-table tbody tr');
+        
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove active class from all buttons
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                const filter = this.getAttribute('data-filter');
+                
+                // Show/hide applications based on filter
+                applications.forEach(app => {
+                    if (filter === 'all' || app.getAttribute('data-status') === filter) {
+                        app.style.display = '';
+                    } else {
+                        app.style.display = 'none';
+                    }
+                });
+            });
+        });
+    });
+</script>
+{% endblock %}

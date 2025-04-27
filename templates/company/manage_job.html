@@ -1,0 +1,287 @@
+{% extends "layout.html" %}
+
+{% block title %}Manage Job - {{ job.title }} - RecruitMe{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="manage-job-container">
+    <div class="row">
+        <div class="col-md-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('company.profile') }}">Company Profile</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Manage Job</li>
+                </ol>
+            </nav>
+            
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="mb-0">{{ job.title }}</h2>
+                    <p class="text-muted">
+                        Posted on {{ job.created_at.strftime('%Y-%m-%d') }}
+                        {% if job.deadline %}
+                            <span class="mx-2">•</span> Deadline: {{ job.deadline.strftime('%Y-%m-%d') }}
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="job-status-actions">
+                    {% if job.is_active %}
+                        <span class="badge bg-success me-2">Active</span>
+                    {% else %}
+                        <span class="badge bg-secondary me-2">Inactive</span>
+                    {% endif %}
+                    
+                    <form action="{{ url_for('company.toggle_job_status', job_id=job.id) }}" method="POST" class="d-inline">
+                        <button type="submit" class="btn {% if job.is_active %}btn-outline-secondary{% else %}btn-outline-success{% endif %} btn-sm">
+                            {% if job.is_active %}
+                                <i class="fas fa-pause"></i> Pause Listing
+                            {% else %}
+                                <i class="fas fa-play"></i> Activate Listing
+                            {% endif %}
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <!-- Job Edit Form -->
+        <div class="col-lg-8">
+            <div class="profile-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-edit"></i> Edit Job Details</h3>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('company.manage_job', job_id=job.id) }}">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="mb-3">
+                            <label for="title" class="form-label">{{ form.title.label }}</label>
+                            {{ form.title(class="form-control", placeholder="e.g., Senior Software Engineer") }}
+                            {% for error in form.title.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="description" class="form-label">{{ form.description.label }}</label>
+                            {{ form.description(class="form-control", rows="6") }}
+                            {% for error in form.description.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="requirements" class="form-label">{{ form.requirements.label }}</label>
+                            {{ form.requirements(class="form-control", rows="4") }}
+                            {% for error in form.requirements.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="location" class="form-label">{{ form.location.label }}</label>
+                                {{ form.location(class="form-control") }}
+                                {% for error in form.location.errors %}
+                                    <div class="text-danger">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="job_type" class="form-label">{{ form.job_type.label }}</label>
+                                {{ form.job_type(class="form-select") }}
+                                {% for error in form.job_type.errors %}
+                                    <div class="text-danger">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="salary_min" class="form-label">{{ form.salary_min.label }}</label>
+                                {{ form.salary_min(class="form-control") }}
+                                {% for error in form.salary_min.errors %}
+                                    <div class="text-danger">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            
+                            <div class="col-md-4 mb-3">
+                                <label for="salary_max" class="form-label">{{ form.salary_max.label }}</label>
+                                {{ form.salary_max(class="form-control") }}
+                                {% for error in form.salary_max.errors %}
+                                    <div class="text-danger">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            
+                            <div class="col-md-4 mb-3">
+                                <label for="deadline" class="form-label">{{ form.deadline.label }}</label>
+                                {{ form.deadline(class="form-control", type="date") }}
+                                {% for error in form.deadline.errors %}
+                                    <div class="text-danger">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            {{ form.submit(class="btn btn-primary") }}
+                            <a href="{{ url_for('company.profile') }}" class="btn btn-secondary">Cancel</a>
+                            <form action="{{ url_for('company.delete_job', job_id=job.id) }}" method="POST" class="d-inline"
+                                  onsubmit="return confirm('Are you sure you want to delete this job? This action cannot be undone.');">
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="fas fa-trash"></i> Delete Job
+                                </button>
+                            </form>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Applications Summary -->
+        <div class="col-lg-4">
+            <div class="profile-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-file-alt"></i> Applications</h3>
+                </div>
+                <div class="card-body">
+                    {% if applications %}
+                        <div class="application-stats mb-4">
+                            <div class="row text-center">
+                                <div class="col-6 mb-3">
+                                    <div class="stat-card">
+                                        <div class="stat-icon">
+                                            <i class="fas fa-users"></i>
+                                        </div>
+                                        <div class="stat-info">
+                                            <h4>{{ applications|length }}</h4>
+                                            <p>Total Applications</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6 mb-3">
+                                    <div class="stat-card">
+                                        <div class="stat-icon">
+                                            <i class="fas fa-clock"></i>
+                                        </div>
+                                        <div class="stat-info">
+                                            <h4>{{ applications|selectattr('status', 'equalto', 'pending')|list|length }}</h4>
+                                            <p>Pending Review</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h5 class="mb-3">Recent Applications</h5>
+                        <div class="recent-applications">
+                            {% for application in applications[:5] %}
+                                <div class="application-item">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <div>
+                                            <h6 class="mb-0">{{ application.student.first_name }} {{ application.student.last_name }}</h6>
+                                            <small class="text-muted">Applied {{ application.created_at.strftime('%Y-%m-%d') }}</small>
+                                        </div>
+                                        <span class="badge 
+                                            {% if application.status == 'pending' %}bg-warning
+                                            {% elif application.status == 'reviewing' %}bg-info
+                                            {% elif application.status == 'accepted' %}bg-success
+                                            {% elif application.status == 'rejected' %}bg-danger
+                                            {% endif %}">
+                                            {{ application.status.capitalize() }}
+                                        </span>
+                                    </div>
+                                    <div class="application-actions">
+                                        <div class="btn-group">
+                                            <form action="{{ url_for('company.update_application_status', application_id=application.id) }}" method="POST">
+                                                <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
+                                                    <option value="" disabled selected>Update status</option>
+                                                    <option value="pending" {% if application.status == 'pending' %}disabled{% endif %}>Pending</option>
+                                                    <option value="reviewing" {% if application.status == 'reviewing' %}disabled{% endif %}>Reviewing</option>
+                                                    <option value="accepted" {% if application.status == 'accepted' %}disabled{% endif %}>Accept</option>
+                                                    <option value="rejected" {% if application.status == 'rejected' %}disabled{% endif %}>Reject</option>
+                                                </select>
+                                            </form>
+                                            <a href="{{ url_for('messages.new_conversation', user_id=application.student.user.id) }}" 
+                                               class="btn btn-sm btn-outline-primary ms-2">
+                                                <i class="fas fa-envelope"></i> Message
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% if not loop.last %}<hr>{% endif %}
+                            {% endfor %}
+                            
+                            {% if applications|length > 5 %}
+                                <div class="text-center mt-3">
+                                    <a href="{{ url_for('company.applications') }}" class="btn btn-sm btn-outline-primary">
+                                        View All Applications
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <div class="empty-state">
+                                <i class="fas fa-file-alt fa-3x mb-3"></i>
+                                <h5>No applications yet</h5>
+                                <p class="text-muted">You haven't received any applications for this job yet.</p>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="profile-card mt-4">
+                <div class="card-header">
+                    <h3><i class="fas fa-link"></i> Job Links</h3>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label">Public Job URL</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" readonly 
+                                   value="{{ url_for('jobs.detail', job_id=job.id, _external=True) }}" 
+                                   id="job-url">
+                            <button class="btn btn-outline-secondary" type="button" 
+                                    onclick="copyToClipboard('job-url')">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                        <small class="text-muted">Share this link to promote your job listing.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/profile.js') }}"></script>
+<script>
+    function copyToClipboard(elementId) {
+        const copyText = document.getElementById(elementId);
+        copyText.select();
+        copyText.setSelectionRange(0, 99999);
+        navigator.clipboard.writeText(copyText.value);
+        
+        // Show feedback
+        const button = copyText.nextElementSibling;
+        const originalHTML = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-check"></i> Copied!';
+        button.classList.remove('btn-outline-secondary');
+        button.classList.add('btn-success');
+        
+        setTimeout(() => {
+            button.innerHTML = originalHTML;
+            button.classList.remove('btn-success');
+            button.classList.add('btn-outline-secondary');
+        }, 2000);
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,181 @@
+{% extends "layout.html" %}
+
+{% block title %}Edit Profile - RecruitMe{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="profile-edit-container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="profile-card">
+                <div class="card-header">
+                    <h2>
+                        {% if skill_form %}
+                            <i class="fas fa-cogs"></i> Add Skill
+                        {% else %}
+                            <i class="fas fa-user-edit"></i> Edit Profile
+                        {% endif %}
+                    </h2>
+                </div>
+                <div class="card-body">
+                    {% if skill_form %}
+                        <!-- Skill Form -->
+                        <form method="POST" action="{{ url_for('student.add_skill') }}">
+                            {{ form.hidden_tag() }}
+                            
+                            <div class="mb-3">
+                                <label for="name" class="form-label">{{ form.name.label }}</label>
+                                {{ form.name(class="form-control", placeholder="e.g., JavaScript, Python, Project Management") }}
+                                {% for error in form.name.errors %}
+                                    <div class="text-danger">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="level" class="form-label">{{ form.level.label }}</label>
+                                {{ form.level(class="form-control", type="range", min="1", max="5", step="1") }}
+                                <div class="skill-level-indicator d-flex justify-content-between">
+                                    <span>Beginner</span>
+                                    <span>Intermediate</span>
+                                    <span>Expert</span>
+                                </div>
+                                <div class="skill-level-display text-center mt-2">Level: <span id="skill-level-value">3</span>/5</div>
+                                {% for error in form.level.errors %}
+                                    <div class="text-danger">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            
+                            <div class="form-actions">
+                                {{ form.submit(class="btn btn-primary") }}
+                                <a href="{{ url_for('student.profile') }}" class="btn btn-secondary">Cancel</a>
+                            </div>
+                        </form>
+                    {% else %}
+                        <!-- Profile Form -->
+                        <form method="POST" action="{{ url_for('student.edit_profile') }}" enctype="multipart/form-data">
+                            {{ form.hidden_tag() }}
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="first_name" class="form-label">{{ form.first_name.label }}</label>
+                                    {{ form.first_name(class="form-control") }}
+                                    {% for error in form.first_name.errors %}
+                                        <div class="text-danger">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="last_name" class="form-label">{{ form.last_name.label }}</label>
+                                    {{ form.last_name(class="form-control") }}
+                                    {% for error in form.last_name.errors %}
+                                        <div class="text-danger">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="bio" class="form-label">{{ form.bio.label }}</label>
+                                {{ form.bio(class="form-control", rows="4", placeholder="Tell us about yourself") }}
+                                <div class="form-text">Tell potential employers about yourself, your career goals, and what makes you unique.</div>
+                                {% for error in form.bio.errors %}
+                                    <div class="text-danger">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="education" class="form-label">{{ form.education.label }}</label>
+                                {{ form.education(class="form-control", rows="3", placeholder="Your educational background") }}
+                                <div class="form-text">List your degrees, institutions, graduation years, and relevant courses.</div>
+                                {% for error in form.education.errors %}
+                                    <div class="text-danger">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="phone" class="form-label">{{ form.phone.label }}</label>
+                                    {{ form.phone(class="form-control", placeholder="+XX XXXXXXXXXX") }}
+                                    {% for error in form.phone.errors %}
+                                        <div class="text-danger">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="website" class="form-label">{{ form.website.label }}</label>
+                                    {{ form.website(class="form-control", placeholder="https://") }}
+                                    {% for error in form.website.errors %}
+                                        <div class="text-danger">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="profile_picture" class="form-label">{{ form.profile_picture.label }}</label>
+                                {% if student.profile_picture %}
+                                    <div class="current-picture mb-2">
+                                        <img src="{{ url_for('static', filename='uploads/' + student.profile_picture) }}" 
+                                             alt="Current Profile Picture" class="img-thumbnail" style="height: 100px;">
+                                        <span class="ms-2">Current Profile Picture</span>
+                                    </div>
+                                {% endif %}
+                                {{ form.profile_picture(class="form-control") }}
+                                <div class="form-text">Upload a professional profile picture. Maximum size: 5MB.</div>
+                                {% for error in form.profile_picture.errors %}
+                                    <div class="text-danger">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="cv_file" class="form-label">{{ form.cv_file.label }}</label>
+                                {% if student.cv_file %}
+                                    <div class="current-cv mb-2">
+                                        <i class="fas fa-file-pdf fa-2x me-2"></i>
+                                        <span>Current CV: 
+                                            <a href="{{ url_for('static', filename='uploads/' + student.cv_file) }}" target="_blank">
+                                                View CV
+                                            </a>
+                                        </span>
+                                    </div>
+                                {% endif %}
+                                {{ form.cv_file(class="form-control") }}
+                                <div class="form-text">Upload your CV in PDF, DOC, or DOCX format. Maximum size: 5MB.</div>
+                                {% for error in form.cv_file.errors %}
+                                    <div class="text-danger">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            
+                            <div class="form-actions">
+                                {{ form.submit(class="btn btn-primary") }}
+                                <a href="{{ url_for('student.profile') }}" class="btn btn-secondary">Cancel</a>
+                            </div>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/profile.js') }}"></script>
+{% if skill_form %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const levelInput = document.getElementById('level');
+        const levelValue = document.getElementById('skill-level-value');
+        
+        // Set initial value
+        levelValue.textContent = levelInput.value;
+        
+        // Update value on change
+        levelInput.addEventListener('input', function() {
+            levelValue.textContent = this.value;
+        });
+    });
+</script>
+{% endif %}
+{% endblock %}

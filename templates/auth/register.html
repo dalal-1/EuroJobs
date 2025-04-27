@@ -1,0 +1,109 @@
+{% extends "layout.html" %}
+
+{% block title %}Register - RecruitMe{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="auth-card">
+                <div class="card-header text-center">
+                    <h2><i class="fas fa-user-plus"></i> Create an Account</h2>
+                    <p class="text-muted">Join RecruitMe to connect with opportunities</p>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('auth.register') }}">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="mb-3">
+                            <label for="username" class="form-label">{{ form.username.label }}</label>
+                            {{ form.username(class="form-control", placeholder="Choose a username") }}
+                            {% for error in form.username.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="email" class="form-label">{{ form.email.label }}</label>
+                            {{ form.email(class="form-control", placeholder="Enter your email") }}
+                            {% for error in form.email.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="password" class="form-label">{{ form.password.label }}</label>
+                            {{ form.password(class="form-control", placeholder="Create a password (minimum 8 characters)") }}
+                            {% for error in form.password.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="confirm_password" class="form-label">{{ form.confirm_password.label }}</label>
+                            {{ form.confirm_password(class="form-control", placeholder="Confirm your password") }}
+                            {% for error in form.confirm_password.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="account_type" class="form-label">{{ form.account_type.label }}</label>
+                            <div class="account-type-selector">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label class="account-type-card" for="student">
+                                            <input type="radio" name="account_type" id="student" value="student">
+                                            <div class="card-content">
+                                                <div class="icon">
+                                                    <i class="fas fa-user-graduate fa-3x"></i>
+                                                </div>
+                                                <div class="info">
+                                                    <h4>Student</h4>
+                                                    <p>Find jobs, showcase your skills, and build your career</p>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="account-type-card" for="company">
+                                            <input type="radio" name="account_type" id="company" value="company">
+                                            <div class="card-content">
+                                                <div class="icon">
+                                                    <i class="fas fa-building fa-3x"></i>
+                                                </div>
+                                                <div class="info">
+                                                    <h4>Company</h4>
+                                                    <p>Post jobs, manage applications, and find the best talent</p>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            {% for error in form.account_type.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            {{ form.submit(class="btn btn-primary btn-lg") }}
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer text-center">
+                    <p>Already have an account? <a href="{{ url_for('auth.login') }}">Login</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+{% endblock %}

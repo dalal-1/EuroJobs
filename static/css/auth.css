@@ -1,0 +1,129 @@
+/* Auth.css - Styles for authentication pages */
+
+.auth-container {
+    padding: 40px 0;
+}
+
+.auth-card {
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.auth-card .card-header {
+    background-color: white;
+    padding: 30px 20px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.auth-card .card-header h2 {
+    margin-bottom: 10px;
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+.auth-card .card-body {
+    padding: 30px;
+}
+
+.auth-card .card-footer {
+    background-color: #f8f9fc;
+    padding: 20px;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.account-type-selector {
+    margin-bottom: 20px;
+}
+
+.account-type-card {
+    display: block;
+    position: relative;
+    border-radius: 10px;
+    border: 2px solid #e9ecef;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 15px;
+    background-color: white;
+}
+
+.account-type-card input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.account-type-card .card-content {
+    display: flex;
+    align-items: center;
+}
+
+.account-type-card .icon {
+    flex-shrink: 0;
+    margin-right: 20px;
+    color: var(--secondary-color);
+    transition: all 0.3s ease;
+}
+
+.account-type-card .info {
+    flex-grow: 1;
+}
+
+.account-type-card .info h4 {
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.account-type-card .info p {
+    color: var(--secondary-color);
+    margin-bottom: 0;
+    font-size: 0.9rem;
+}
+
+.account-type-card:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.account-type-card input[type="radio"]:checked + .card-content .icon {
+    color: var(--primary-color);
+}
+
+.account-type-card input[type="radio"]:checked + .card-content {
+    color: var(--primary-color);
+}
+
+.account-type-card input[type="radio"]:checked ~ .card-content {
+    color: var(--primary-color);
+}
+
+.account-type-card input[type="radio"]:checked + .card-content .info h4 {
+    color: var(--primary-color);
+}
+
+.account-type-card input[type="radio"]:checked {
+    border-color: var(--primary-color);
+    background-color: rgba(78, 115, 223, 0.05);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+    .account-type-card .card-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .account-type-card .icon {
+        margin-right: 0;
+        margin-bottom: 15px;
+    }
+}

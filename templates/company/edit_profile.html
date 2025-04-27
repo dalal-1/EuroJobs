@@ -1,0 +1,112 @@
+{% extends "layout.html" %}
+
+{% block title %}Edit Company Profile - RecruitMe{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="profile-edit-container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="profile-card">
+                <div class="card-header">
+                    <h2><i class="fas fa-building"></i> Edit Company Profile</h2>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('company.edit_profile') }}" enctype="multipart/form-data">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="mb-3">
+                            <label for="name" class="form-label">{{ form.name.label }}</label>
+                            {{ form.name(class="form-control") }}
+                            {% for error in form.name.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="description" class="form-label">{{ form.description.label }}</label>
+                            {{ form.description(class="form-control", rows="4", placeholder="Tell us about your company") }}
+                            <div class="form-text">Provide a detailed description of your company, its mission, values, and culture.</div>
+                            {% for error in form.description.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="industry" class="form-label">{{ form.industry.label }}</label>
+                                {{ form.industry(class="form-control", placeholder="e.g., Technology, Healthcare, Finance") }}
+                                {% for error in form.industry.errors %}
+                                    <div class="text-danger">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="location" class="form-label">{{ form.location.label }}</label>
+                                {{ form.location(class="form-control", placeholder="City, Country") }}
+                                {% for error in form.location.errors %}
+                                    <div class="text-danger">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="size" class="form-label">{{ form.size.label }}</label>
+                                {{ form.size(class="form-control") }}
+                                {% for error in form.size.errors %}
+                                    <div class="text-danger">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="founded_year" class="form-label">{{ form.founded_year.label }}</label>
+                                {{ form.founded_year(class="form-control", placeholder="e.g., 2010") }}
+                                {% for error in form.founded_year.errors %}
+                                    <div class="text-danger">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="website" class="form-label">{{ form.website.label }}</label>
+                            {{ form.website(class="form-control", placeholder="https://") }}
+                            {% for error in form.website.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="logo" class="form-label">{{ form.logo.label }}</label>
+                            {% if company.logo %}
+                                <div class="current-logo mb-2">
+                                    <img src="{{ url_for('static', filename='uploads/' + company.logo) }}" 
+                                         alt="Current Logo" class="img-thumbnail" style="height: 100px;">
+                                    <span class="ms-2">Current Logo</span>
+                                </div>
+                            {% endif %}
+                            {{ form.logo(class="form-control") }}
+                            <div class="form-text">Upload your company logo. Maximum size: 5MB. Recommended size: Square (1:1 ratio).</div>
+                            {% for error in form.logo.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="form-actions">
+                            {{ form.submit(class="btn btn-primary") }}
+                            <a href="{{ url_for('company.profile') }}" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/profile.js') }}"></script>
+{% endblock %}

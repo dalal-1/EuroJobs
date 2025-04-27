@@ -1,0 +1,102 @@
+{% extends "layout.html" %}
+
+{% block title %}Conversation with {{ display_name }} - RecruitMe{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/messages.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="messages-container">
+    <div class="row">
+        <div class="col-lg-10 offset-lg-1">
+            <div class="conversation-card">
+                <!-- Conversation Header -->
+                <div class="conversation-header">
+                    <a href="{{ url_for('messages.inbox') }}" class="btn btn-sm btn-outline-secondary me-3">
+                        <i class="fas fa-arrow-left"></i>
+                    </a>
+                    
+                    <div class="avatar">
+                        {% if profile_pic %}
+                            <img src="{{ url_for('static', filename='uploads/' + profile_pic) }}" 
+                                 alt="{{ display_name }}">
+                        {% else %}
+                            {{ display_name[0] }}
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <h5 class="name">{{ display_name }}</h5>
+                        <div class="status">
+                            {% if other_user.is_active %}
+                                <span class="text-success">Active</span>
+                            {% else %}
+                                <span class="text-muted">Offline</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Conversation Body (Messages) -->
+                <div class="conversation-body">
+                    {% if messages %}
+                        {% set currentDay = None %}
+                        {% for message in messages %}
+                            {% set messageDay = message.timestamp.strftime('%Y-%m-%d') %}
+                            
+                            {% if currentDay != messageDay %}
+                                <div class="date-divider">
+                                    {% if messageDay == now.strftime('%Y-%m-%d') %}
+                                        Today
+                                    {% elif messageDay == (now - timedelta(days=1)).strftime('%Y-%m-%d') %}
+                                        Yesterday
+                                    {% else %}
+                                        {{ message.timestamp.strftime('%B %d, %Y') }}
+                                    {% endif %}
+                                </div>
+                                {% set currentDay = messageDay %}
+                            {% endif %}
+                            
+                            <div class="message {% if message.sender_id == current_user.id %}message-sent{% else %}message-received{% endif %}">
+                                {{ message.body }}
+                                <span class="message-time">
+                                    {{ message.timestamp.strftime('%H:%M') }}
+                                </span>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="empty-conversation">
+                            <i class="fas fa-comments"></i>
+                            <h3>Start a conversation</h3>
+                            <p>Send a message to {{ display_name }} to start chatting.</p>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Conversation Footer (Message Form) -->
+                <div class="conversation-footer">
+                    <form method="POST" action="{{ url_for('messages.conversation', user_id=other_user.id) }}" class="message-form" id="message-form">
+                        {{ form.hidden_tag() }}
+                        {{ form.recipient_id }}
+                        
+                        <div class="input-group">
+                            {{ form.body(class="form-control message-input", placeholder="Type a message...", rows="1", autocomplete="off") }}
+                            <button type="button" class="btn btn-outline-primary" id="emoji-button">
+                                <i class="far fa-smile"></i>
+                            </button>
+                            <button type="submit" class="btn btn-primary message-submit">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/messages.js') }}"></script>
+{% endblock %}

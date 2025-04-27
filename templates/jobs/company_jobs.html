@@ -1,0 +1,152 @@
+{% extends "layout.html" %}
+
+{% block title %}Jobs at {{ company.name }} - RecruitMe{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/jobs.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="jobs-container">
+    <div class="row">
+        <div class="col-lg-8 offset-lg-2">
+            <!-- Company Header -->
+            <div class="job-detail-header mb-4">
+                <div class="d-flex">
+                    <div class="company-logo">
+                        {% if company.logo %}
+                            <img src="{{ url_for('static', filename='uploads/' + company.logo) }}" 
+                                 alt="{{ company.name }}">
+                        {% else %}
+                            <div class="company-initial">
+                                {{ company.name[0] }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="flex-grow-1">
+                        <h2 class="company-name">{{ company.name }}</h2>
+                        
+                        <div class="job-tags">
+                            {% if company.industry %}
+                                <span class="tag"><i class="fas fa-industry"></i> {{ company.industry }}</span>
+                            {% endif %}
+                            
+                            {% if company.location %}
+                                <span class="tag"><i class="fas fa-map-marker-alt"></i> {{ company.location }}</span>
+                            {% endif %}
+                            
+                            {% if company.size %}
+                                <span class="tag"><i class="fas fa-users"></i> {{ company.size }} employees</span>
+                            {% endif %}
+                        </div>
+                        
+                        {% if company.description %}
+                            <div class="mt-3">
+                                <p>{{ company.description[:200] }}{% if company.description|length > 200 %}...{% endif %}</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="company-actions mt-3">
+                    {% if company.website %}
+                        <a href="{{ company.website }}" class="btn btn-outline-primary" target="_blank">
+                            <i class="fas fa-globe"></i> Visit Website
+                        </a>
+                    {% endif %}
+                    
+                    {% if current_user.is_authenticated and user_type == 'student' %}
+                        <a href="{{ url_for('messages.new_conversation', user_id=company.user_id) }}" 
+                           class="btn btn-outline-secondary">
+                            <i class="fas fa-envelope"></i> Contact Company
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Job Listings -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>Open Positions at {{ company.name }}</h3>
+                </div>
+                <div class="card-body">
+                    {% if jobs %}
+                        <div class="job-listings">
+                            {% for job in jobs %}
+                                <div class="job-card animate-on-scroll">
+                                    <h4 class="job-title">
+                                        <a href="{{ url_for('jobs.detail', job_id=job.id) }}">{{ job.title }}</a>
+                                    </h4>
+                                    
+                                    <div class="job-tags">
+                                        {% if job.location %}
+                                            <span class="tag"><i class="fas fa-map-marker-alt"></i> {{ job.location }}</span>
+                                        {% endif %}
+                                        
+                                        <span class="tag"><i class="fas fa-clock"></i> {{ job.job_type.replace('-', ' ').capitalize() }}</span>
+                                        
+                                        {% if job.salary_min or job.salary_max %}
+                                            <span class="tag"><i class="fas fa-money-bill-wave"></i> 
+                                                {% if job.salary_min and job.salary_max %}
+                                                    ${{ job.salary_min|int }} - ${{ job.salary_max|int }}
+                                                {% elif job.salary_min %}
+                                                    From ${{ job.salary_min|int }}
+                                                {% elif job.salary_max %}
+                                                    Up to ${{ job.salary_max|int }}
+                                                {% endif %}
+                                            </span>
+                                        {% endif %}
+                                        
+                                        {% if job.deadline %}
+                                            <span class="tag"><i class="fas fa-calendar-alt"></i> Deadline: {{ job.deadline.strftime('%Y-%m-%d') }}</span>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <div class="job-description-preview">
+                                        {{ job.description[:150] }}{% if job.description|length > 150 %}...{% endif %}
+                                    </div>
+                                    
+                                    <div class="job-footer">
+                                        <span class="posted-date">
+                                            <i class="fas fa-clock"></i> Posted {{ job.created_at.strftime('%Y-%m-%d') }}
+                                        </span>
+                                        
+                                        <div class="job-actions">
+                                            <a href="{{ url_for('jobs.detail', job_id=job.id) }}" class="btn btn-outline-primary btn-sm">
+                                                View Details
+                                            </a>
+                                            
+                                            {% if current_user.is_authenticated and job.id in applied_jobs %}
+                                                <span class="badge bg-success ms-2">
+                                                    <i class="fas fa-check"></i> Applied
+                                                </span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                {% if not loop.last %}<hr>{% endif %}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <div class="empty-state">
+                                <i class="fas fa-briefcase fa-3x mb-3"></i>
+                                <h3>No open positions</h3>
+                                <p class="text-muted">{{ company.name }} doesn't have any active job listings at the moment.</p>
+                                <a href="{{ url_for('jobs.listing') }}" class="btn btn-primary mt-3">
+                                    <i class="fas fa-search"></i> Browse All Jobs
+                                </a>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/jobs.js') }}"></script>
+{% endblock %}
