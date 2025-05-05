@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Styles similaires à ceux que tu avais déjà */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+            font-family: 'Arial', sans-serif;
+            flex: 1;
+        }
+
+        .card {
+            background-color: #1e1e1e;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .card-header {
+            background-color: #222831;
+            border-bottom: 1px solid #393e46;
+            color: white;
+            font-weight: bold;
+        }
+
+        table {
+            background-color: #1e1e1e;
+            color: #e0e0e0;
+        }
+
+        th, td {
+            border-color: #393e46;
+            color: #e0e0e0;
+            transition: background-color 0.3s ease;
+        }
+
+        th:hover, td:hover {
+            background-color: #2c2c2c;
+            cursor: pointer;
+        }
+
+        .btn-info {
+            background-color: #00adb5;
+            border: none;
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-info:hover {
+            background-color: #008c8c;
+        }
+
+        .btn-danger {
+            background-color: #ff5722;
+            border: none;
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-danger:hover {
+            background-color: #e64a19;
+        }
+
+        .navbar {
+            background-color: #393e46;
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 20px;
+        }
+
+        .navbar-brand {
+            color: #ffffff;
+            font-size: 1.5rem;
+        }
+
+        #sidebar-wrapper {
+            background-color: #222831;
+            color: white;
+            width: 250px;
+            height: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            box-shadow: 3px 0 15px rgba(0, 0, 0, 0.3);
+            padding-top: 20px;
+        }
+
+        .sidebar-heading {
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .list-group-item {
+            border: none;
+            color: white;
+            padding: 15px 20px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            background-color: transparent;
+        }
+
+        .list-group-item:hover {
+            background-color: #00adb5;
+            color: #121212;
+            font-weight: bold;
+            transform: scale(1.02);
+            cursor: pointer;
+        }
+
+        #page-content-wrapper {
+            margin-left: 250px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        footer {
+            background-color: #121212;
+            color: #e0e0e0;
+            padding: 10px;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        .statistics-card {
+            background-color: #222831;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+            margin-bottom: 20px;
+        }
+
+        .statistics-card h4 {
+            color: #00adb5;
+            font-weight: bold;
+        }
+        #statistics {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px; /* Espace entre les graphiques */
+}
+
+.statistics-card {
+    background-color: #222831;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+    width: 90%; /* Ajuste pour les faire tenir côte à côte */
+}
+
+.statistics-card canvas {
+    
+    height: 450px;
+    margin: 0 auto;
+}
+
+    </style>
+</head>
+
+<body>
+
+    <div class="d-flex" id="wrapper">
+        <div class="bg-dark text-white" id="sidebar-wrapper">
+            <div class="sidebar-heading py-4">Admin Dashboard</div>
+            <div class="list-group list-group-flush">
+                <a href="#" class="list-group-item list-group-item-action">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+                <a href="#manage-users" class="list-group-item list-group-item-action">
+                    <i class="fas fa-users"></i> Manage Users
+                </a>
+                <a href="#manage-jobs" class="list-group-item list-group-item-action">
+                    <i class="fas fa-briefcase"></i> Manage Jobs
+                </a>
+                <a href="#activity" class="list-group-item list-group-item-action">
+                    <i class="fas fa-history"></i> Recent Activity
+                </a>
+                <a href="#statistics" class="list-group-item list-group-item-action">
+                    <i class="fas fa-chart-pie"></i> Statistics
+                </a>
+            </div>
+        </div>
+
+        <div id="page-content-wrapper">
+            <nav class="navbar navbar-expand-lg navbar-dark">
+                <a class="navbar-brand" href="#">Job Board Admin</a>
+                <a class="dropdown-item" href="{{ url_for('auth.logout') }}">
+                  <i class="fas fa-sign-out-alt"></i> Logout
+            </nav>
+
+            <div class="container mt-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1>Admin Dashboard</h1>
+                    <button class="btn-export" onclick="exportPDF()"><i class="fas fa-file-pdf"></i> Export PDF</button>
+                </div>
+
+                <div id="statistics" class="row">
+                    <div class="col-md-6">
+                        <div class="statistics-card">
+                            <h4>Total Users</h4>
+                            <canvas id="totalUsersChart" width="300" height="300"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="statistics-card">
+                            <h4>Total Jobs</h4>
+                            <canvas id="totalJobsChart" width="300" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="manage-users" class="mt-5">
+                    <h3>Manage Users</h3>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in stats.recent_users %}
+                            <tr>
+                                <td>{{ user.username }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>
+                                    <a href="{{ url_for('admin.user_detail', user_id=user.id) }}" class="btn btn-info">View</a>
+                                    <form action="{{ url_for('delete_user', user_id=user.id) }}" method="post" style="display:inline;">
+                                        <button class="btn btn-danger" type="submit">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="manage-jobs" class="mt-5">
+                    <h3>Manage Job Posts</h3>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Job Title</th>
+                                <th>Company</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for job in stats.recent_jobs %}
+                            <tr>
+                                <td>{{ job.title }}</td>
+                                <td>{{ job.company.name }}</td>
+                                <td>
+                                    <a href="{{ url_for('view_job_post', job_id=job.id) }}" class="btn btn-info">View</a>
+                                    <form action="{{ url_for('delete_job', job_id=job.id) }}" method="post" style="display:inline;">
+                                        <button class="btn btn-danger" type="submit">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="activity" class="mt-5 recent-activity">
+                    <h3>Recent Activity</h3>
+                    <ul>
+                        {% for activity in stats.activities %}
+                        <li>
+                            <strong>{{ activity.username }}</strong> {{ activity.action }} - <small>{{ activity.timestamp }}</small>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Job Board Admin. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const userCtx = document.getElementById('totalUsersChart').getContext('2d');
+        const jobCtx = document.getElementById('totalJobsChart').getContext('2d');
+
+        new Chart(userCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Students', 'Companies'],
+                datasets: [{
+                    data: [{{ stats.total_students }}, {{ stats.total_companies }}],
+                    backgroundColor: ['#00adb5', '#ff5722']
+                }]
+            }
+        });
+
+        new Chart(jobCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Open Jobs', 'Closed Jobs'],
+                datasets: [{
+                    data: [{{ stats.open_jobs }}, {{ stats.closed_jobs }}],
+                    backgroundColor: ['#00adb5', '#e64a19']
+                }]
+            }
+        });
+    </script>
+
+</body>
+
+</html>

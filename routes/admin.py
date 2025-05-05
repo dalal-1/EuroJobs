@@ -34,7 +34,6 @@ def dashboard():
             Application.status, func.count(Application.id)
         ).group_by(Application.status).all()
     }
-    
     return render_template('admin/dashboard.html', stats=stats)
 
 @admin_bp.route('/admin/users')
@@ -158,7 +157,6 @@ def toggle_admin(user_id):
     """Toggle admin status for a user"""
     user = User.query.get_or_404(user_id)
     
-    # Prevent removing admin status from yourself
     if user.id == current_user.id:
         flash('You cannot remove your own admin status.', 'danger')
         return redirect(url_for('admin.user_detail', user_id=user_id))
@@ -176,7 +174,6 @@ def toggle_active(user_id):
     """Toggle active status for a user"""
     user = User.query.get_or_404(user_id)
     
-    # Prevent deactivating yourself
     if user.id == current_user.id:
         flash('You cannot deactivate your own account.', 'danger')
         return redirect(url_for('admin.user_detail', user_id=user_id))
@@ -213,7 +210,6 @@ def table_view(table_name):
     """View contents of a specific database table"""
     page = request.args.get('page', 1, type=int)
     
-    # Map table names to model classes
     table_models = {
         'users': User,
         'students': Student,
@@ -232,7 +228,6 @@ def table_view(table_name):
     model = table_models[table_name]
     pagination = model.query.paginate(page=page, per_page=20, error_out=False)
     
-    # Get column names for the table
     columns = [column.name for column in model.__table__.columns]
     
     return render_template('admin/table_view.html', 
@@ -245,27 +240,22 @@ def table_view(table_name):
 @admin_required
 def stats():
     """Statistical data for charts and graphs"""
-    # Jobs by job type
     jobs_by_type = db.session.query(
         JobPost.job_type, func.count(JobPost.id)
     ).group_by(JobPost.job_type).all()
     
-    # Applications by status
     applications_by_status = db.session.query(
         Application.status, func.count(Application.id)
     ).group_by(Application.status).all()
     
-    # Users over time (last 30 days)
     users_over_time = db.session.query(
         func.date(User.created_at), func.count(User.id)
     ).group_by(func.date(User.created_at)).all()
     
-    # Companies by industry
     companies_by_industry = db.session.query(
         Company.industry, func.count(Company.id)
     ).group_by(Company.industry).all()
     
-    # Prepare data for charts
     chart_data = {
         'jobs_by_type': {
             'labels': [t[0] or 'unknown' for t in jobs_by_type],
@@ -280,7 +270,7 @@ def stats():
             'data': [d[1] for d in users_over_time]
         },
         'companies_by_industry': {
-            'labels': [i[0] or 'unknown' for i in companies_by_industry],
+            'labels': [i[0] for i in companies_by_industry],
             'data': [i[1] for i in companies_by_industry]
         }
     }

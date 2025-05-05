@@ -4,20 +4,27 @@
 
 {% block styles %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+<!-- Ajouter la bibliothèque Select2 pour les champs avec recherche -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+<!-- Ajouter Flag Icon CSS pour les drapeaux -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/5.0.0/css/flag-icons.min.css" />
 {% endblock %}
 
 {% block content %}
 <div class="profile-edit-container">
     <div class="row">
         <div class="col-md-8 offset-md-2">
-            <div class="profile-card">
-                <div class="card-header">
+            <div class="profile-card shadow-lg p-4">
+                <div class="card-header bg-primary text-white text-center">
                     <h2><i class="fas fa-building"></i> Edit Company Profile</h2>
+                    <p class="lead">Update your company details and make sure they are accurate for better visibility.</p>
                 </div>
                 <div class="card-body">
                     <form method="POST" action="{{ url_for('company.edit_profile') }}" enctype="multipart/form-data">
                         {{ form.hidden_tag() }}
-                        
+
+                        <!-- TITRE SECTION : Nom de l'Entreprise -->
+                        <h4 class="mt-4">1. Company Name</h4>
                         <div class="mb-3">
                             <label for="name" class="form-label">{{ form.name.label }}</label>
                             {{ form.name(class="form-control") }}
@@ -25,7 +32,9 @@
                                 <div class="text-danger">{{ error }}</div>
                             {% endfor %}
                         </div>
-                        
+
+                        <!-- TITRE SECTION : Description -->
+                        <h4 class="mt-4">2. Company Description</h4>
                         <div class="mb-3">
                             <label for="description" class="form-label">{{ form.description.label }}</label>
                             {{ form.description(class="form-control", rows="4", placeholder="Tell us about your company") }}
@@ -34,34 +43,142 @@
                                 <div class="text-danger">{{ error }}</div>
                             {% endfor %}
                         </div>
-                        
+
+                        <!-- TITRE SECTION : Industry and Location -->
+                        <h4 class="mt-4">3. Industry and Location</h4>
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="industry" class="form-label">{{ form.industry.label }}</label>
-                                {{ form.industry(class="form-control", placeholder="e.g., Technology, Healthcare, Finance") }}
+                                <select name="industry" class="form-control">
+                                    <option value="Technology" {% if form.industry.data == 'Technology' %} selected {% endif %}>Technology</option>
+                                    <option value="Healthcare" {% if form.industry.data == 'Healthcare' %} selected {% endif %}>Healthcare</option>
+                                    <option value="Finance" {% if form.industry.data == 'Finance' %} selected {% endif %}>Finance</option>
+                                    <option value="Retail" {% if form.industry.data == 'Retail' %} selected {% endif %}>Retail</option>
+                                    <option value="Manufacturing" {% if form.industry.data == 'Manufacturing' %} selected {% endif %}>Manufacturing</option>
+                                    <option value="Energy" {% if form.industry.data == 'Energy' %} selected {% endif %}>Energy</option>
+                                    <option value="Entertainment" {% if form.industry.data == 'Entertainment' %} selected {% endif %}>Entertainment</option>
+                                    <option value="Logistics" {% if form.industry.data == 'Logistics' %} selected {% endif %}>Logistics</option>
+                                    <option value="Education" {% if form.industry.data == 'Education' %} selected {% endif %}>Education</option>
+                                    <option value="Real Estate" {% if form.industry.data == 'Real Estate' %} selected {% endif %}>Real Estate</option>
+                                    <option value="Other" {% if form.industry.data == 'Other' %} selected {% endif %}>Other</option>
+                                </select>
                                 {% for error in form.industry.errors %}
                                     <div class="text-danger">{{ error }}</div>
                                 {% endfor %}
                             </div>
-                            
+
                             <div class="col-md-6 mb-3">
                                 <label for="location" class="form-label">{{ form.location.label }}</label>
-                                {{ form.location(class="form-control", placeholder="City, Country") }}
+                                <select id="location" name="location" class="form-control">
+                                    <!-- Liste de pays avec drapeaux (y compris les pays arabes) -->
+                                    <option value="US" {% if form.location.data == 'US' %} selected {% endif %}>
+                                        <span class="flag-icon flag-icon-us"></span> United States
+                                    </option>
+                                    <option value="GB" {% if form.location.data == 'GB' %} selected {% endif %}>
+                                        <span class="flag-icon flag-icon-gb"></span> United Kingdom
+                                    </option>
+                                    <option value="FR" {% if form.location.data == 'FR' %} selected {% endif %}>
+                                        <span class="flag-icon flag-icon-fr"></span> France
+                                    </option>
+                                    <option value="DE" {% if form.location.data == 'DE' %} selected {% endif %}>
+                                        <span class="flag-icon flag-icon-de"></span> Germany
+                                    </option>
+                                    <option value="IT" {% if form.location.data == 'IT' %} selected {% endif %}>
+                                        <span class="flag-icon flag-icon-it"></span> Italy
+                                    </option>
+                                    <option value="CA" {% if form.location.data == 'CA' %} selected {% endif %}>
+                                        <span class="flag-icon flag-icon-ca"></span> Canada
+                                    </option>
+                                    <option value="JP" {% if form.location.data == 'JP' %} selected {% endif %}>
+                                        <span class="flag-icon flag-icon-jp"></span> Japan
+                                    </option>
+                                    <option value="IN" {% if form.location.data == 'IN' %} selected {% endif %}>
+                                        <span class="flag-icon flag-icon-in"></span> India
+                                    </option>
+                                    <option value="AU" {% if form.location.data == 'AU' %} selected {% endif %}>
+                                        <span class="flag-icon flag-icon-au"></span> Australia
+                                    </option>
+                                    <option value="CN" {% if form.location.data == 'CN' %} selected {% endif %}>
+                                        <span class="flag-icon flag-icon-cn"></span> China
+                                    </option>
+                                    <option value="BR" {% if form.location.data == 'BR' %} selected {% endif %}>
+                                        <span class="flag-icon flag-icon-br"></span> Brazil
+                                    </option>
+
+                                    <!-- Ajouter les pays arabes -->
+                                    <option value="SA" {% if form.location.data == 'SA' %} selected {% endif %}>
+                                        <span class="flag-icon flag-icon-sa"></span> Saudi Arabia
+                                    </option>
+                                    <option value="AE" {% if form.location.data == 'AE' %} selected {% endif %}>
+                                        <span class="flag-icon flag-icon-ae"></span> United Arab Emirates
+                                    </option>
+                                    <option value="EG" {% if form.location.data == 'EG' %} selected {% endif %}>
+                                        <span class="flag-icon flag-icon-eg"></span> Egypt
+                                    </option>
+                                    <option value="KW" {% if form.location.data == 'KW' %} selected {% endif %}>
+                                        <span class="flag-icon flag-icon-kw"></span> Kuwait
+                                    </option>
+                                    <option value="QA" {% if form.location.data == 'QA' %} selected {% endif %}>
+                                        <span class="flag-icon flag-icon-qa"></span> Qatar
+                                    </option>
+                                    <option value="OM" {% if form.location.data == 'OM' %} selected {% endif %}>
+                                        <span class="flag-icon flag-icon-om"></span> Oman
+                                    </option>
+                                    <option value="BH" {% if form.location.data == 'BH' %} selected {% endif %}>
+                                        <span class="flag-icon flag-icon-bh"></span> Bahrain
+                                    </option>
+                                    <option value="DZ" {% if form.location.data == 'DZ' %} selected {% endif %}>
+                                        <span class="flag-icon flag-icon-dz"></span> Algeria
+                                    </option>
+                                    <option value="MA" {% if form.location.data == 'MA' %} selected {% endif %}>
+                                        <span class="flag-icon flag-icon-ma"></span> Morocco
+                                    </option>
+                                    <option value="TN" {% if form.location.data == 'TN' %} selected {% endif %}>
+                                        <span class="flag-icon flag-icon-tn"></span> Tunisia
+                                    </option>
+                                    <option value="LY" {% if form.location.data == 'LY' %} selected {% endif %}>
+                                        <span class="flag-icon flag-icon-ly"></span> Libya
+                                    </option>
+                                    <option value="JO" {% if form.location.data == 'JO' %} selected {% endif %}>
+                                        <span class="flag-icon flag-icon-jo"></span> Jordan
+                                    </option>
+                                    <option value="IQ" {% if form.location.data == 'IQ' %} selected {% endif %}>
+                                        <span class="flag-icon flag-icon-iq"></span> Iraq
+                                    </option>
+                                    <option value="SY" {% if form.location.data == 'SY' %} selected {% endif %}>
+                                        <span class="flag-icon flag-icon-sy"></span> Syria
+                                    </option>
+                                    <option value="YE" {% if form.location.data == 'YE' %} selected {% endif %}>
+                                        <span class="flag-icon flag-icon-ye"></span> Yemen
+                                    </option>
+                                    <option value="PS" {% if form.location.data == 'PS' %} selected {% endif %}>
+                                        <span class="flag-icon flag-icon-ps"></span> Palestine
+                                    </option>
+
+                                    <!-- Ajouter d'autres pays arabes ici -->
+                                </select>
                                 {% for error in form.location.errors %}
                                     <div class="text-danger">{{ error }}</div>
                                 {% endfor %}
                             </div>
                         </div>
-                        
+
+                        <!-- TITRE SECTION : Company Size -->
+                        <h4 class="mt-4">4. Company Size</h4>
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="size" class="form-label">{{ form.size.label }}</label>
-                                {{ form.size(class="form-control") }}
+                                <select name="size" class="form-control">
+                                    <option value="Small" {% if form.size.data == 'Small' %} selected {% endif %}>Small</option>
+                                    <option value="Medium" {% if form.size.data == 'Medium' %} selected {% endif %}>Medium</option>
+                                    <option value="Large" {% if form.size.data == 'Large' %} selected {% endif %}>Large</option>
+                                    <option value="Enterprise" {% if form.size.data == 'Enterprise' %} selected {% endif %}>Enterprise</option>
+                                </select>
                                 {% for error in form.size.errors %}
                                     <div class="text-danger">{{ error }}</div>
                                 {% endfor %}
                             </div>
-                            
+
                             <div class="col-md-6 mb-3">
                                 <label for="founded_year" class="form-label">{{ form.founded_year.label }}</label>
                                 {{ form.founded_year(class="form-control", placeholder="e.g., 2010") }}
@@ -70,34 +187,13 @@
                                 {% endfor %}
                             </div>
                         </div>
-                        
-                        <div class="mb-3">
-                            <label for="website" class="form-label">{{ form.website.label }}</label>
-                            {{ form.website(class="form-control", placeholder="https://") }}
-                            {% for error in form.website.errors %}
-                                <div class="text-danger">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="logo" class="form-label">{{ form.logo.label }}</label>
-                            {% if company.logo %}
-                                <div class="current-logo mb-2">
-                                    <img src="{{ url_for('static', filename='uploads/' + company.logo) }}" 
-                                         alt="Current Logo" class="img-thumbnail" style="height: 100px;">
-                                    <span class="ms-2">Current Logo</span>
-                                </div>
-                            {% endif %}
-                            {{ form.logo(class="form-control") }}
-                            <div class="form-text">Upload your company logo. Maximum size: 5MB. Recommended size: Square (1:1 ratio).</div>
-                            {% for error in form.logo.errors %}
-                                <div class="text-danger">{{ error }}</div>
-                            {% endfor %}
-                        </div>
-                        
-                        <div class="form-actions">
-                            {{ form.submit(class="btn btn-primary") }}
-                            <a href="{{ url_for('company.profile') }}" class="btn btn-secondary">Cancel</a>
+
+                        <!-- Form Actions -->
+                        <div class="form-actions mt-4">
+                            <div class="d-flex justify-content-between">
+                                {{ form.submit(class="btn btn-primary btn-lg") }}
+                                <a href="{{ url_for('company.profile') }}" class="btn btn-secondary btn-lg">Cancel</a>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -105,8 +201,24 @@
         </div>
     </div>
 </div>
-{% endblock %}
 
-{% block scripts %}
-<script src="{{ url_for('static', filename='js/profile.js') }}"></script>
+<!-- Ajouter la bibliothèque Select2 et son JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#location').select2({
+            templateResult: function(data) {
+                if (!data.id) {
+                    return data.text;
+                }
+                var $result = $(
+                    '<span><i class="flag-icon flag-icon-' + data.id.toLowerCase() + '"></i> ' + data.text + '</span>'
+                );
+                return $result;
+            }
+        });
+    });
+</script>
+
 {% endblock %}

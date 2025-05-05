@@ -1,129 +1,172 @@
-/* Auth.css - Styles for authentication pages */
-
-.auth-container {
-    padding: 40px 0;
+:root {
+    --primary-color: #5fad56; /* Vert */
+    --secondary-color: #4a8b47; /* Vert foncé */
+    --background-color: #ffffff; /* Fond blanc */
+    --card-background: #f8f9fa; /* Fond des cartes blanc cassé */
+    --header-background: #ffffff; /* Fond de l'en-tête blanc */
+    --footer-background: #f1f3f5; /* Fond du pied de page blanc cassé */
+    --border-color: #ddd; /* Bordure subtile grise */
+    --highlight-color: #495057; /* Gris foncé pour les textes */
+    --hover-bg: rgba(95, 173, 86, 0.2); /* Fond vert transparent au survol */
 }
 
-.auth-card {
-    background-color: white;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    transition: all 0.3s ease;
-    animation: fadeIn 0.5s ease-in-out;
+body {
+    background-color: var(--background-color);
+    color: var(--highlight-color);
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
 }
 
-.auth-card .card-header {
-    background-color: white;
-    padding: 30px 20px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+.header {
+    background-color: var(--header-background);
+    color: #333;
+    padding: 20px 0;
+    text-align: center;
+    border-bottom: 2px solid var(--border-color);
 }
 
-.auth-card .card-header h2 {
-    margin-bottom: 10px;
+.header h1 {
+    font-size: 3rem;
+    font-weight: bold;
     color: var(--primary-color);
-    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.auth-card .card-body {
-    padding: 30px;
-}
-
-.auth-card .card-footer {
-    background-color: #f8f9fc;
-    padding: 20px;
-    border-top: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-.account-type-selector {
-    margin-bottom: 20px;
-}
-
-.account-type-card {
-    display: block;
-    position: relative;
-    border-radius: 10px;
-    border: 2px solid #e9ecef;
-    padding: 20px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-bottom: 15px;
-    background-color: white;
-}
-
-.account-type-card input[type="radio"] {
-    position: absolute;
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-.account-type-card .card-content {
+.navbar {
     display: flex;
+    justify-content: center;
     align-items: center;
+    background-color: var(--header-background);
+    padding: 10px 0;
+    border-bottom: 2px solid var(--border-color);
 }
 
-.account-type-card .icon {
-    flex-shrink: 0;
-    margin-right: 20px;
-    color: var(--secondary-color);
-    transition: all 0.3s ease;
+.navbar a {
+    text-decoration: none;
+    color: var(--highlight-color);
+    margin: 0 20px;
+    font-size: 1.2rem;
+    transition: color 0.3s ease;
 }
 
-.account-type-card .info {
-    flex-grow: 1;
+.navbar a:hover {
+    color: var(--secondary-color); /* Vert foncé au survol des liens */
 }
 
-.account-type-card .info h4 {
-    margin-bottom: 5px;
-    font-weight: 600;
+.hero-section {
+    background-color: var(--primary-color);
+    padding: 100px 20px;
+    text-align: center;
+    border-bottom: 2px solid var(--border-color);
 }
 
-.account-type-card .info p {
-    color: var(--secondary-color);
-    margin-bottom: 0;
-    font-size: 0.9rem;
+.hero-section h2 {
+    font-size: 2.5rem;
+    color: #fff;
 }
 
-.account-type-card:hover {
-    border-color: var(--primary-color);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+.hero-section p {
+    font-size: 1.2rem;
+    color: #fff;
+    margin-top: 20px;
 }
 
-.account-type-card input[type="radio"]:checked + .card-content .icon {
+.button {
+    background-color: var(--secondary-color);
+    color: #fff;
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: #3e7d3e; /* Vert plus foncé au survol */
+}
+
+.card {
+    background-color: var(--card-background);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    margin: 20px 0;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.card h3 {
+    font-size: 1.8rem;
     color: var(--primary-color);
 }
 
-.account-type-card input[type="radio"]:checked + .card-content {
-    color: var(--primary-color);
+.card p {
+    color: var(--highlight-color);
+    font-size: 1rem;
 }
 
-.account-type-card input[type="radio"]:checked ~ .card-content {
-    color: var(--primary-color);
+.footer {
+    background-color: var(--footer-background);
+    color: #333;
+    padding: 30px 0;
+    text-align: center;
+    border-top: 2px solid var(--border-color);
 }
 
-.account-type-card input[type="radio"]:checked + .card-content .info h4 {
-    color: var(--primary-color);
+.footer a {
+    color: #333;
+    text-decoration: none;
+    font-size: 1rem;
+    margin: 0 10px;
 }
 
-.account-type-card input[type="radio"]:checked {
-    border-color: var(--primary-color);
-    background-color: rgba(78, 115, 223, 0.05);
+.footer a:hover {
+    color: var(--secondary-color); /* Vert foncé au survol des liens */
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+/* Ajout des effets hover pour les icônes Student et Company */
+.icon-student, .icon-company {
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    display: inline-block;
+    padding: 10px;
+    border-radius: 50%;
+    background-color: transparent;
+}
+
+.icon-student:hover, .icon-company:hover {
+    background-color: var(--primary-color); /* Fond vert au survol */
+    transform: scale(1.1); /* Légère augmentation de taille */
 }
 
 @media (max-width: 768px) {
-    .account-type-card .card-content {
-        flex-direction: column;
-        text-align: center;
+    .header h1 {
+        font-size: 2rem;
     }
-    
-    .account-type-card .icon {
-        margin-right: 0;
-        margin-bottom: 15px;
+
+    .navbar a {
+        font-size: 1rem;
+    }
+
+    .hero-section h2 {
+        font-size: 2rem;
+    }
+
+    .hero-section p {
+        font-size: 1rem;
+    }
+
+    .button {
+        padding: 10px 20px;
+        font-size: 1rem;
+    }
+
+    .card {
+        margin: 10px 0;
     }
 }

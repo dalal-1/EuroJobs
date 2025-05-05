@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, login_required, current_user
 from urllib.parse import urlparse
-from app import db
+from extensions import db  # Import db from extensions instead of app
 from models import User, Student, Company
 from forms import LoginForm, RegistrationForm
 
@@ -10,7 +10,10 @@ auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('home'))
+        # Redirect to dashboard if the user is an admin
+        if current_user.is_admin:
+            return redirect(url_for('admin.dashboard'))  # Redirect to admin dashboard
+        return redirect(url_for('home'))  # For regular users, redirect to home
     
     form = LoginForm()
     if form.validate_on_submit():
@@ -23,12 +26,15 @@ def login():
         
         next_page = request.args.get('next')
         if not next_page or urlparse(next_page).netloc != '':
-            if Student.query.filter_by(user_id=user.id).first():
+            # Redirect to the appropriate page based on the user type
+            if current_user.is_admin:
+                next_page = url_for('admin.dashboard')  # Redirect to admin dashboard
+            elif Student.query.filter_by(user_id=user.id).first():
                 next_page = url_for('student.profile')
             elif Company.query.filter_by(user_id=user.id).first():
                 next_page = url_for('company.profile')
             else:
-                next_page = url_for('home')
+                next_page = url_for('home')  # Default redirect
         
         return redirect(next_page)
     

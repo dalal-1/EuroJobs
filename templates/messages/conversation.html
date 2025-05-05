@@ -22,7 +22,7 @@
                             <img src="{{ url_for('static', filename='uploads/' + profile_pic) }}" 
                                  alt="{{ display_name }}">
                         {% else %}
-                            {{ display_name[0] }}
+                            <span class="avatar-initial">{{ display_name[0] }}</span>
                         {% endif %}
                     </div>
                     

@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>User Details</h1>
+    
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">{{ user.username }}</h5>
+            <p class="card-text">{{ user.email }}</p>
+            <p class="card-text">{{ 'Admin' if user.is_admin else 'User' }}</p>
+            <p class="card-text">{{ 'Active' if user.is_active else 'Inactive' }}</p>
+            <p class="card-text">Joined: {{ user.created_at.strftime('%Y-%m-%d') }}</p>
+
+            <form method="post" action="{{ url_for('admin.toggle_admin', user_id=user.id) }}" class="d-inline">
+                <button type="submit" class="btn btn-warning">Toggle Admin Status</button>
+            </form>
+            <form method="post" action="{{ url_for('admin.toggle_active', user_id=user.id) }}" class="d-inline">
+                <button type="submit" class="btn btn-danger">Toggle Active Status</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

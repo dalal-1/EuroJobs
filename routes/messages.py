@@ -1,9 +1,8 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_required, current_user
-from app import db
 from models import Message, User, Student, Company, Conversation
 from forms import MessageForm
-from datetime import datetime
+from datetime import datetime, timedelta
 from utils import get_or_create_conversation, create_notification
 
 messages_bp = Blueprint('messages', __name__, url_prefix='/messages')
@@ -11,44 +10,42 @@ messages_bp = Blueprint('messages', __name__, url_prefix='/messages')
 @messages_bp.route('/')
 @login_required
 def inbox():
-    # Get all conversations involving the current user
+    from app import db
+
     conversations = Conversation.query.filter(
         (Conversation.user1_id == current_user.id) | 
         (Conversation.user2_id == current_user.id)
     ).order_by(Conversation.updated_at.desc()).all()
-    
-    # Get latest message for each conversation
+
     conversation_data = []
     for conv in conversations:
         other_user_id = conv.user2_id if conv.user1_id == current_user.id else conv.user1_id
         other_user = User.query.get(other_user_id)
-        
-        # Get the student or company info to display name
+
         display_name = other_user.username
-        if Student.query.filter_by(user_id=other_user_id).first():
-            student = Student.query.filter_by(user_id=other_user_id).first()
-            if student.first_name and student.last_name:
-                display_name = f"{student.first_name} {student.last_name}"
+        profile_pic = None
+
+        student = Student.query.filter_by(user_id=other_user_id).first()
+        company = Company.query.filter_by(user_id=other_user_id).first()
+
+        if student and student.first_name and student.last_name:
+            display_name = f"{student.first_name} {student.last_name}"
             profile_pic = student.profile_picture
-        else:
-            company = Company.query.filter_by(user_id=other_user_id).first()
-            if company and company.name:
-                display_name = company.name
-            profile_pic = company.logo if company else None
-        
-        # Get latest message
+        elif company:
+            display_name = company.name
+            profile_pic = company.logo
+
         latest_message = Message.query.filter(
             ((Message.sender_id == current_user.id) & (Message.recipient_id == other_user_id)) |
             ((Message.sender_id == other_user_id) & (Message.recipient_id == current_user.id))
         ).order_by(Message.timestamp.desc()).first()
-        
-        # Count unread messages
+
         unread_count = Message.query.filter_by(
-            sender_id=other_user_id, 
-            recipient_id=current_user.id, 
+            sender_id=other_user_id,
+            recipient_id=current_user.id,
             read=False
         ).count()
-        
+
         conversation_data.append({
             'conversation_id': conv.id,
             'other_user_id': other_user_id,
@@ -57,53 +54,90 @@ def inbox():
             'latest_message': latest_message,
             'unread_count': unread_count
         })
-    
-    return render_template('messages/inbox.html', conversations=conversation_data)
 
-@messages_bp.route('/conversation/<int:user_id>', methods=['GET', 'POST'])
+    return render_template(
+        'messages/inbox.html',
+        conversations=conversation_data,
+        now=datetime.utcnow()
+    )
+
+
+@messages_bp.route('/conversation/<int:user_id>/details', methods=['GET'])
 @login_required
-def conversation(user_id):
+def conversation_details(user_id):
+    from app import db
+
     other_user = User.query.get_or_404(user_id)
-    
-    # Get or create conversation
     conversation = get_or_create_conversation(current_user.id, user_id)
-    
-    # Get display name and profile pic
-    if Student.query.filter_by(user_id=user_id).first():
-        student = Student.query.filter_by(user_id=user_id).first()
-        if student.first_name and student.last_name:
-            display_name = f"{student.first_name} {student.last_name}"
-        else:
-            display_name = other_user.username
+
+    student = Student.query.filter_by(user_id=user_id).first()
+    company = Company.query.filter_by(user_id=user_id).first()
+
+    if student and student.first_name and student.last_name:
+        display_name = f"{student.first_name} {student.last_name}"
         profile_pic = student.profile_picture
+    elif company and company.name:
+        display_name = company.name
+        profile_pic = company.logo
     else:
-        company = Company.query.filter_by(user_id=user_id).first()
-        display_name = company.name if company and company.name else other_user.username
-        profile_pic = company.logo if company else None
-    
-    # Mark messages as read
-    unread_messages = Message.query.filter_by(
-        sender_id=user_id, 
-        recipient_id=current_user.id, 
-        read=False
-    ).all()
-    
-    for message in unread_messages:
-        message.read = True
-    
-    if unread_messages:
-        db.session.commit()
-    
-    # Get messages between the two users
+        display_name = other_user.username
+        profile_pic = None
+
     messages = Message.query.filter(
         ((Message.sender_id == current_user.id) & (Message.recipient_id == user_id)) |
         ((Message.sender_id == user_id) & (Message.recipient_id == current_user.id))
     ).order_by(Message.timestamp).all()
-    
-    # Form for sending a new message
+
+    return render_template(
+        'messages/detail.html',
+        other_user=other_user,
+        display_name=display_name,
+        profile_pic=profile_pic,
+        messages=messages,
+        now=datetime.utcnow()
+    )
+
+
+@messages_bp.route('/conversation/<int:user_id>', methods=['GET', 'POST'])
+@login_required
+def conversation(user_id):
+    from app import db
+
+    other_user = User.query.get_or_404(user_id)
+    conversation = get_or_create_conversation(current_user.id, user_id)
+
+    student = Student.query.filter_by(user_id=user_id).first()
+    company = Company.query.filter_by(user_id=user_id).first()
+
+    if student and student.first_name and student.last_name:
+        display_name = f"{student.first_name} {student.last_name}"
+        profile_pic = student.profile_picture
+    elif company and company.name:
+        display_name = company.name
+        profile_pic = company.logo
+    else:
+        display_name = other_user.username
+        profile_pic = None
+
+    unread_messages = Message.query.filter_by(
+        sender_id=user_id,
+        recipient_id=current_user.id,
+        read=False
+    ).all()
+    for message in unread_messages:
+        message.read = True
+
+    if unread_messages:
+        db.session.commit()
+
+    messages = Message.query.filter(
+        ((Message.sender_id == current_user.id) & (Message.recipient_id == user_id)) |
+        ((Message.sender_id == user_id) & (Message.recipient_id == current_user.id))
+    ).order_by(Message.timestamp).all()
+
     form = MessageForm()
     form.recipient_id.data = user_id
-    
+
     if form.validate_on_submit():
         message = Message(
             sender_id=current_user.id,
@@ -112,49 +146,33 @@ def conversation(user_id):
             timestamp=datetime.utcnow()
         )
         db.session.add(message)
-        
-        # Update conversation timestamp
         conversation.updated_at = datetime.utcnow()
-        
         db.session.commit()
-        
-        # Create notification for recipient
-        notify_message = f"New message from "
-        if current_user.id == conversation.user1_id:
-            if Student.query.filter_by(user_id=current_user.id).first():
-                student = Student.query.filter_by(user_id=current_user.id).first()
-                notify_message += f"{student.first_name} {student.last_name}"
-            else:
-                company = Company.query.filter_by(user_id=current_user.id).first()
-                notify_message += company.name
-        else:
-            if Student.query.filter_by(user_id=current_user.id).first():
-                student = Student.query.filter_by(user_id=current_user.id).first()
-                notify_message += f"{student.first_name} {student.last_name}"
-            else:
-                company = Company.query.filter_by(user_id=current_user.id).first()
-                notify_message += company.name
-                
-        create_notification(
-            other_user, 
-            notify_message,
-            url_for('messages.conversation', user_id=current_user.id)
-        )
-        
-        return redirect(url_for('messages.conversation', user_id=user_id))
-    
-    return render_template('messages/conversation.html', 
-                          other_user=other_user,
-                          display_name=display_name,
-                          profile_pic=profile_pic,
-                          messages=messages,
-                          form=form)
 
-@messages_bp.route('/new/<int:user_id>')
-@login_required
-def new_conversation(user_id):
-    # Check if user exists
-    user = User.query.get_or_404(user_id)
-    
-    # Redirect to conversation
-    return redirect(url_for('messages.conversation', user_id=user_id))
+        # Créer une notification propre avec fallback
+        sender_name = current_user.username
+        student_sender = Student.query.filter_by(user_id=current_user.id).first()
+        company_sender = Company.query.filter_by(user_id=current_user.id).first()
+        if student_sender:
+            sender_name = f"{student_sender.first_name} {student_sender.last_name}"
+        elif company_sender:
+            sender_name = company_sender.name
+
+        create_notification(
+            other_user,
+            f"New message from {sender_name}",
+            url_for('messages.conversation_details', user_id=current_user.id)
+        )
+
+        return redirect(url_for('messages.conversation', user_id=user_id))
+
+    return render_template(
+        'messages/conversation.html',
+        other_user=other_user,
+        display_name=display_name,
+        profile_pic=profile_pic,
+        messages=messages,
+        form=form,
+        now=datetime.utcnow(),
+        timedelta=timedelta
+    )

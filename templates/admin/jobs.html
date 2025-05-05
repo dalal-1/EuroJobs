@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h1>Job Posts</h1>
+<form method="get">
+    <input type="text" name="search" value="{{ search }}" placeholder="Search by job title">
+    <button type="submit">Search</button>
+</form>
+
+<table>
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Company</th>
+            <th>Created At</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for job in pagination.items %}
+        <tr>
+            <td>{{ job.title }}</td>
+            <td>{{ job.company.name }}</td>
+            <td>{{ job.created_at }}</td>
+            <td>
+                <a href="{{ url_for('admin.job_detail', job_id=job.id) }}">View</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="pagination">
+    {{ pagination.pages }} Pages
+</div>
+{% endblock %}

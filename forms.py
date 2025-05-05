@@ -3,7 +3,7 @@ from flask_wtf.file import FileField, FileAllowed
 from wtforms import StringField, PasswordField, SubmitField, TextAreaField, SelectField
 from wtforms import BooleanField, IntegerField, FloatField, DateField, HiddenField
 from wtforms.validators import DataRequired, Email, EqualTo, Length, Optional, URL, NumberRange, ValidationError
-from models import User
+from models import User  # Assuming 'User' model is defined in 'models.py'
 
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
@@ -61,6 +61,10 @@ class CompanyProfileForm(FlaskForm):
     ], validators=[Optional()])
     founded_year = IntegerField('Founded Year', validators=[Optional(), NumberRange(min=1800, max=2100)])
     logo = FileField('Company Logo', validators=[Optional(), FileAllowed(['jpg', 'png'], 'Images only!')])
+
+    # 🆕 Ajout du champ 'company_select' pour voir les étudiants
+    company_select = SelectField('Select Company', choices=[], validators=[Optional()])
+
     submit = SubmitField('Update Profile')
 
 class JobPostForm(FlaskForm):
@@ -105,3 +109,4 @@ class SearchForm(FlaskForm):
     ], validators=[Optional()])
     location = StringField('Location', validators=[Optional(), Length(max=128)])
     submit = SubmitField('Search')
+

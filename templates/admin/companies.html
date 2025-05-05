@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Companies</h1>
+
+    <form method="get" action="{{ url_for('admin.companies') }}">
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Search by company name" name="search" value="{{ search }}">
+            <button class="btn btn-outline-secondary" type="submit">Search</button>
+        </div>
+    </form>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Industry</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for company in pagination.items %}
+                <tr>
+                    <td>{{ company.name }}</td>
+                    <td>{{ company.industry }}</td>
+                    <td>
+                        <a href="{{ url_for('admin.company_detail', company_id=company.id) }}" class="btn btn-info btn-sm">View</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pagination">
+        {% if pagination.has_prev %}
+        <a href="{{ url_for('admin.companies', page=pagination.prev_num) }}" class="btn btn-outline-secondary">Previous</a>
+        {% endif %}
+        {% if pagination.has_next %}
+        <a href="{{ url_for('admin.companies', page=pagination.next_num) }}" class="btn btn-outline-secondary">Next</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

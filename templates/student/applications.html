@@ -77,10 +77,13 @@
                                             <td>{{ application.created_at.strftime('%Y-%m-%d') }}</td>
                                             <td>
                                                 <div class="btn-group">
-                                                    <a href="{{ url_for('messages.new_conversation', user_id=application.job_post.company.user_id) }}" 
-                                                       class="btn btn-sm btn-outline-primary" title="Message Company">
-                                                        <i class="fas fa-envelope"></i>
-                                                    </a>
+                                                    <!-- Changed from link to button -->
+                                                    <form action="{{ url_for('messages.conversation', user_id=application.job_post.company.user_id) }}" method="get" class="d-inline">
+                                                        <button type="submit" class="btn btn-sm btn-outline-primary" title="Message Company">
+                                                            <i class="fas fa-envelope"></i> Message
+                                                        </button>
+                                                    </form>
+                                                    
                                                     {% if application.status == 'pending' %}
                                                         <form action="{{ url_for('student.withdraw_application', application_id=application.id) }}" 
                                                               method="POST" class="d-inline"

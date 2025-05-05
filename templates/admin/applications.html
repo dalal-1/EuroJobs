@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h1>Applications</h1>
+<form method="get">
+    <select name="status">
+        <option value="">All Statuses</option>
+        <option value="pending" {% if status == 'pending' %}selected{% endif %}>Pending</option>
+        <option value="accepted" {% if status == 'accepted' %}selected{% endif %}>Accepted</option>
+        <option value="rejected" {% if status == 'rejected' %}selected{% endif %}>Rejected</option>
+    </select>
+    <button type="submit">Filter</button>
+</form>
+
+<table>
+    <thead>
+        <tr>
+            <th>Job</th>
+            <th>Applicant</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for application in pagination.items %}
+        <tr>
+            <td>{{ application.job.title }}</td>
+            <td>{{ application.student.first_name }} {{ application.student.last_name }}</td>
+            <td>{{ application.status }}</td>
+            <td>
+                <a href="{{ url_for('admin.application_detail', application_id=application.id) }}">View</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="pagination">
+    {{ pagination.pages }} Pages
+</div>
+{% endblock %}

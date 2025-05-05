@@ -1,24 +1,28 @@
-from app import db
+from extensions import db  # Absolute import instead of relative import
 from flask_login import UserMixin
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 
-class User(UserMixin, db.Model):
+# Base class for all models
+class Base(db.Model):
+    __abstract__ = True  # This ensures no table will be created for Base directly
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+class User(UserMixin, Base):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(256), nullable=False)
     is_active = db.Column(db.Boolean, default=True)
     is_admin = db.Column(db.Boolean, default=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    
-    # Relationships
-    student = db.relationship('Student', backref='user', uselist=False)
-    company = db.relationship('Company', backref='user', uselist=False)
-    notifications = db.relationship('Notification', backref='user', lazy='dynamic')
-    messages_sent = db.relationship('Message', foreign_keys='Message.sender_id', backref='sender', lazy='dynamic')
-    messages_received = db.relationship('Message', foreign_keys='Message.recipient_id', backref='recipient', lazy='dynamic')
+
+    # Relationships with cascading delete on all child records
+    student = db.relationship('Student', backref='user', uselist=False, cascade="all, delete-orphan")
+    company = db.relationship('Company', backref='user', uselist=False, cascade="all, delete-orphan")
+    notifications = db.relationship('Notification', backref='user', lazy='dynamic', cascade="all, delete-orphan")
+    messages_sent = db.relationship('Message', foreign_keys='Message.sender_id', backref='sender', lazy='dynamic', cascade="all, delete-orphan")
+    messages_received = db.relationship('Message', foreign_keys='Message.recipient_id', backref='recipient', lazy='dynamic', cascade="all, delete-orphan")
     
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -29,7 +33,7 @@ class User(UserMixin, db.Model):
     def __repr__(self):
         return f'<User {self.username}>'
 
-class Student(db.Model):
+class Student(Base):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     first_name = db.Column(db.String(64))
@@ -40,17 +44,15 @@ class Student(db.Model):
     education = db.Column(db.Text)
     phone = db.Column(db.String(20))
     website = db.Column(db.String(120))
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
-    # Relationships
-    skills = db.relationship('Skill', backref='student', lazy='dynamic')
-    applications = db.relationship('Application', backref='student', lazy='dynamic')
-    
+    # Relationships with cascading delete
+    skills = db.relationship('Skill', backref='student', lazy='dynamic', cascade="all, delete-orphan")
+    applications = db.relationship('Application', backref='student', lazy='dynamic', cascade="all, delete-orphan")
+
     def __repr__(self):
         return f'<Student {self.first_name} {self.last_name}>'
 
-class Skill(db.Model):
+class Skill(Base):
     id = db.Column(db.Integer, primary_key=True)
     student_id = db.Column(db.Integer, db.ForeignKey('student.id'), nullable=False)
     name = db.Column(db.String(64), nullable=False)
@@ -59,7 +61,7 @@ class Skill(db.Model):
     def __repr__(self):
         return f'<Skill {self.name}>'
 
-class Company(db.Model):
+class Company(Base):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     name = db.Column(db.String(128), nullable=False)
@@ -70,16 +72,14 @@ class Company(db.Model):
     location = db.Column(db.String(128))
     size = db.Column(db.String(32))  # e.g., "1-10", "11-50", etc.
     founded_year = db.Column(db.Integer)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
-    # Relationships
-    job_posts = db.relationship('JobPost', backref='company', lazy='dynamic')
+    # Relationships with cascading delete
+    job_posts = db.relationship('JobPost', backref='company', lazy='dynamic', cascade="all, delete-orphan")
     
     def __repr__(self):
         return f'<Company {self.name}>'
 
-class JobPost(db.Model):
+class JobPost(Base):
     id = db.Column(db.Integer, primary_key=True)
     company_id = db.Column(db.Integer, db.ForeignKey('company.id'), nullable=False)
     title = db.Column(db.String(128), nullable=False)
@@ -90,29 +90,25 @@ class JobPost(db.Model):
     salary_min = db.Column(db.Float)
     salary_max = db.Column(db.Float)
     is_active = db.Column(db.Boolean, default=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     deadline = db.Column(db.DateTime)
     
-    # Relationships
-    applications = db.relationship('Application', backref='job_post', lazy='dynamic')
+    # Relationships with cascading delete
+    applications = db.relationship('Application', backref='job_post', lazy='dynamic', cascade="all, delete-orphan")
     
     def __repr__(self):
         return f'<JobPost {self.title}>'
 
-class Application(db.Model):
+class Application(Base):
     id = db.Column(db.Integer, primary_key=True)
     student_id = db.Column(db.Integer, db.ForeignKey('student.id'), nullable=False)
     job_post_id = db.Column(db.Integer, db.ForeignKey('job_post.id'), nullable=False)
     cover_letter = db.Column(db.Text)
     status = db.Column(db.String(32), default='pending')  # pending, reviewing, rejected, accepted
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     def __repr__(self):
         return f'<Application {self.id}>'
 
-class Message(db.Model):
+class Message(Base):
     id = db.Column(db.Integer, primary_key=True)
     sender_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     recipient_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
@@ -123,7 +119,7 @@ class Message(db.Model):
     def __repr__(self):
         return f'<Message {self.id}>'
 
-class Notification(db.Model):
+class Notification(Base):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     message = db.Column(db.Text, nullable=False)
@@ -134,15 +130,24 @@ class Notification(db.Model):
     def __repr__(self):
         return f'<Notification {self.id}>'
 
-class Conversation(db.Model):
+class Conversation(Base):
     id = db.Column(db.Integer, primary_key=True)
     user1_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     user2_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     user1 = db.relationship('User', foreign_keys=[user1_id])
     user2 = db.relationship('User', foreign_keys=[user2_id])
     
     def __repr__(self):
         return f'<Conversation {self.id}>'
+
+# Custom function to ensure secure deletion by admin
+def secure_delete(model, obj_id, admin_user):
+    if not admin_user.is_admin:
+        raise PermissionError("You must be an admin to delete this object.")
+    obj = model.query.get(obj_id)
+    if obj:
+        db.session.delete(obj)
+        db.session.commit()
+    else:
+        raise ValueError(f"Object with id {obj_id} not found.")

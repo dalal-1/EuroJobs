@@ -1,9 +1,36 @@
-/**
- * Auth.js - JavaScript for authentication pages
- */
-
 document.addEventListener('DOMContentLoaded', function() {
-    // Account type selection
+    // Theme toggle functionality
+    const themeToggle = document.createElement('button');
+    themeToggle.textContent = "Toggle Theme";
+    themeToggle.classList.add('theme-toggle');
+    
+    // Append the button to the body or a specific container
+    document.body.appendChild(themeToggle);
+
+    // Check for saved theme preference
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+        document.body.classList.add(savedTheme);
+    } else {
+        // Default theme is light
+        document.body.classList.add('light-theme');
+    }
+
+    // Add event listener for theme toggle
+    themeToggle.addEventListener('click', function() {
+        // Toggle between light and dark themes
+        if (document.body.classList.contains('light-theme')) {
+            document.body.classList.remove('light-theme');
+            document.body.classList.add('dark-theme');
+            localStorage.setItem('theme', 'dark-theme');
+        } else {
+            document.body.classList.remove('dark-theme');
+            document.body.classList.add('light-theme');
+            localStorage.setItem('theme', 'light-theme');
+        }
+    });
+
+    // Account type selection and other existing functionality
     const accountTypeCards = document.querySelectorAll('.account-type-card');
     const accountTypeInputs = document.querySelectorAll('input[name="account_type"]');
     
@@ -103,10 +130,8 @@ document.addEventListener('DOMContentLoaded', function() {
             // Create a slight shadow/highlight effect
             const shadowX = (x / rect.width - 0.5) * 20;
             const shadowY = (y / rect.height - 0.5) * 20;
-            authCard.style.boxShadow = `
-                0 10px 30px rgba(0, 0, 0, 0.1),
-                ${shadowX}px ${shadowY}px 30px rgba(78, 115, 223, 0.1)
-            `;
+            authCard.style.boxShadow = `0 10px 30px rgba(0, 0, 0, 0.1),
+                ${shadowX}px ${shadowY}px 30px rgba(78, 115, 223, 0.1)`;
         });
         
         authCard.addEventListener('mouseleave', () => {
@@ -139,7 +164,6 @@ document.addEventListener('DOMContentLoaded', function() {
  * @param {string} password - The password to validate
  */
 function validatePassword(password) {
-    // This is a simple validation, in a real app you might want more complex checks
     const passwordLength = password.length;
     let strength = 0;
     
@@ -160,7 +184,6 @@ function validatePassword(password) {
     }
     
     // Visual feedback can be added here
-    // For example, changing the border color of the password field
     const passwordInput = document.getElementById('password');
     
     if (strength === 0) {

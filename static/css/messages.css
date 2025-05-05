@@ -1,4 +1,4 @@
-/* Messages.css - Styles for messaging functionality */
+/* Messages.css - 3D Styles for messaging functionality */
 
 .messages-container {
     padding: 20px 0;
@@ -9,13 +9,19 @@
     background-color: #222230; /* Dark background */
     border-radius: 15px;
     overflow: hidden;
-    box-shadow: 0 5px 15px rgba(156, 39, 176, 0.15); /* Purple shadow */
+    box-shadow: 0 8px 20px rgba(156, 39, 176, 0.25); /* Enhanced shadow for 3D depth */
     margin-bottom: 30px;
     display: flex;
     flex-direction: column;
     height: calc(100vh - 250px);
     min-height: 500px;
-    border: 1px solid rgba(156, 39, 176, 0.2); /* Purple border */
+    border: 1px solid rgba(156, 39, 176, 0.3); /* Purple border with more depth */
+    transform: translateZ(0); /* 3D space positioning */
+    transition: transform 0.3s ease;
+}
+
+.inbox-card:hover {
+    transform: translateY(-5px) scale(1.05); /* Hover effect for a subtle 3D lift */
 }
 
 .inbox-header {
@@ -23,6 +29,7 @@
     border-bottom: 1px solid rgba(156, 39, 176, 0.2); /* Purple border */
     background-color: #2a2a3a; /* Slightly lighter than background */
     color: var(--primary-color); /* Purple text */
+    transform: translateZ(0); /* Keep header in 3D space */
 }
 
 .inbox-header h2 {
@@ -51,11 +58,13 @@
     transition: all 0.3s ease;
     text-decoration: none;
     color: var(--light-color); /* Light text color */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); /* Added shadow for depth */
 }
 
 .conversation-item:hover, .conversation-item.active {
     background-color: rgba(156, 39, 176, 0.1); /* Purple highlight */
     border-left: 3px solid var(--primary-color); /* Purple accent border */
+    transform: translateX(10px); /* Added sliding effect on hover */
 }
 
 .conversation-avatar {
@@ -72,12 +81,18 @@
     color: white;
     font-weight: 700;
     font-size: 1.2rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Added shadow for depth */
+    transition: transform 0.3s ease;
 }
 
 .conversation-avatar img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+}
+
+.conversation-avatar:hover {
+    transform: rotate(10deg) scale(1.1); /* Hover effect for 3D rotation */
 }
 
 .conversation-info {
@@ -129,13 +144,19 @@
     background-color: #222230; /* Dark background */
     border-radius: 15px;
     overflow: hidden;
-    box-shadow: 0 5px 15px rgba(156, 39, 176, 0.15); /* Purple shadow */
+    box-shadow: 0 8px 20px rgba(156, 39, 176, 0.25); /* Purple shadow for 3D effect */
     margin-bottom: 30px;
     display: flex;
     flex-direction: column;
     height: calc(100vh - 250px);
     min-height: 500px;
-    border: 1px solid rgba(156, 39, 176, 0.2); /* Purple border */
+    border: 1px solid rgba(156, 39, 176, 0.3); /* Purple border */
+    transform: translateZ(0); /* 3D space positioning */
+    transition: transform 0.3s ease;
+}
+
+.conversation-card:hover {
+    transform: translateY(-5px) scale(1.05); /* Hover effect for a 3D lift */
 }
 
 .conversation-header {
@@ -159,12 +180,18 @@
     justify-content: center;
     color: white;
     font-weight: 700;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Added shadow for depth */
+    transition: transform 0.3s ease;
 }
 
 .conversation-header .avatar img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+}
+
+.conversation-header .avatar:hover {
+    transform: rotate(10deg) scale(1.1); /* Hover effect for 3D rotation */
 }
 
 .conversation-header .name {
@@ -192,7 +219,9 @@
     border-radius: 15px;
     margin-bottom: 15px;
     position: relative;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Deeper shadow for messages */
+    transform: translateZ(0); /* 3D space positioning */
+    transition: transform 0.3s ease;
 }
 
 .message-sent {
@@ -247,6 +276,7 @@
     color: var(--light-color);
     resize: none;
     transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Shadow for input */
 }
 
 .message-input:focus {
@@ -271,55 +301,9 @@
     color: white;
     border: none;
     transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Shadow for button */
 }
 
 .message-submit:hover {
-    background-color: var(--primary-dark);
-}
-
-.date-divider {
-    text-align: center;
-    margin: 20px 0;
-    display: flex;
-    align-items: center;
-    color: rgba(156, 39, 176, 0.6); /* Purple text */
-    font-size: 0.8rem;
-}
-
-.date-divider::before, .date-divider::after {
-    content: "";
-    flex-grow: 1;
-    background-color: rgba(156, 39, 176, 0.2); /* Purple line */
-    height: 1px;
-    margin: 0 10px;
-}
-
-.empty-conversation {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    color: var(--light-color);
-    text-align: center;
-    padding: 20px;
-    background-color: #1a1a25; /* Darker than card background */
-}
-
-.empty-conversation i {
-    font-size: 3rem;
-    margin-bottom: 20px;
-    color: var(--primary-color); /* Purple icon */
-    opacity: 0.5;
-}
-
-/* Responsive Styles */
-@media (max-width: 768px) {
-    .inbox-card, .conversation-card {
-        height: calc(100vh - 200px);
-    }
-    
-    .message {
-        max-width: 85%;
-    }
+    transform: scale(1.1); /* Slight scale on hover for effect */
 }

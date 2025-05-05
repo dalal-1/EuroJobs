@@ -206,7 +206,7 @@
                                                     <option value="rejected" {% if application.status == 'rejected' %}disabled{% endif %}>Reject</option>
                                                 </select>
                                             </form>
-                                            <a href="{{ url_for('messages.new_conversation', user_id=application.student.user.id) }}" 
+                                            <a href="{{ url_for('messages.conversation', user_id=application.student.user.id) }}" 
                                                class="btn btn-sm btn-outline-primary ms-2">
                                                 <i class="fas fa-envelope"></i> Message
                                             </a>

@@ -1,11 +1,12 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
-from app import db
+from extensions import db  # Import db from extensions.py to avoid circular import
 from models import Company, JobPost, Application, Student, User
 from forms import CompanyProfileForm, JobPostForm
 from utils import save_picture, create_notification
 from datetime import datetime
+from sqlalchemy import or_
 
 company_bp = Blueprint('company', __name__, url_prefix='/company')
 

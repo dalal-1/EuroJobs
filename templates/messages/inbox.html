@@ -15,13 +15,14 @@
     <div class="row">
         <div class="col-lg-10 offset-lg-1">
             <div class="inbox-card">
+
                 <!-- Inbox Header -->
                 <div class="inbox-header">
                     <h2>Your Conversations</h2>
                 </div>
                 
                 <!-- Search Bar -->
-                <div class="inbox-search">
+                <div class="inbox-search mb-3">
                     <div class="input-group">
                         <span class="input-group-text">
                             <i class="fas fa-search"></i>
@@ -35,46 +36,48 @@
                     {% if conversations %}
                         {% for conversation in conversations %}
                             <a href="{{ url_for('messages.conversation', user_id=conversation.other_user_id) }}" 
-                               class="conversation-item" data-conversation-id="{{ conversation.other_user_id }}">
-                                <div class="conversation-avatar">
+                               class="conversation-item d-flex align-items-center" 
+                               data-conversation-id="{{ conversation.other_user_id }}">
+                               
+                                <div class="conversation-avatar me-3">
                                     {% if conversation.profile_pic %}
                                         <img src="{{ url_for('static', filename='uploads/' + conversation.profile_pic) }}" 
                                              alt="{{ conversation.display_name }}">
                                     {% else %}
-                                        {{ conversation.display_name[0] }}
+                                        <span class="avatar-initial">{{ conversation.display_name[0] }}</span>
                                     {% endif %}
                                 </div>
                                 
-                                <div class="conversation-info">
-                                    <div class="conversation-name">
-                                        {{ conversation.display_name }}
+                                <div class="conversation-info flex-grow-1">
+                                    <div class="conversation-name d-flex justify-content-between align-items-center">
+                                        <span>{{ conversation.display_name }}</span>
                                         {% if conversation.unread_count > 0 %}
                                             <span class="unread-badge">{{ conversation.unread_count }}</span>
                                         {% endif %}
                                     </div>
-                                    <div class="conversation-message">
+                                    <div class="conversation-message text-muted mt-1">
                                         {% if conversation.latest_message %}
                                             {% if conversation.latest_message.sender_id == current_user.id %}
-                                                <i class="fas fa-reply text-muted me-1"></i>
+                                                <i class="fas fa-reply me-1 text-muted"></i>
                                             {% endif %}
-                                            {{ conversation.latest_message.body|truncate(50) }}
+                                            {{ conversation.latest_message.body | truncate(50) }}
                                         {% else %}
                                             <span class="text-muted">No messages yet</span>
                                         {% endif %}
                                     </div>
                                 </div>
                                 
-                                <div class="conversation-time">
+                                <div class="conversation-time text-end text-muted small ms-3">
                                     {% if conversation.latest_message %}
                                         {% set time_diff = (now - conversation.latest_message.timestamp).total_seconds() %}
                                         {% if time_diff < 60 %}
                                             Just now
                                         {% elif time_diff < 3600 %}
-                                            {{ (time_diff // 60)|int }} min
+                                            {{ (time_diff // 60)|int }} min{{ 's' if time_diff // 60 > 1 else '' }}
                                         {% elif time_diff < 86400 %}
-                                            {{ (time_diff // 3600)|int }} hrs
+                                            {{ (time_diff // 3600)|int }} hr{{ 's' if time_diff // 3600 > 1 else '' }}
                                         {% elif time_diff < 604800 %}
-                                            {{ (time_diff // 86400)|int }}d
+                                            {{ (time_diff // 86400)|int }} day{{ 's' if time_diff // 86400 > 1 else '' }}
                                         {% else %}
                                             {{ conversation.latest_message.timestamp.strftime('%b %d') }}
                                         {% endif %}
@@ -83,17 +86,17 @@
                             </a>
                         {% endfor %}
                     {% else %}
-                        <div class="empty-conversation">
-                            <i class="fas fa-comments"></i>
+                        <div class="empty-conversation text-center">
+                            <i class="fas fa-comments fa-3x mb-3"></i>
                             <h3>No conversations yet</h3>
                             <p>When you message someone, you'll see your conversations here.</p>
                             
                             {% if user_type == 'student' %}
-                                <a href="{{ url_for('jobs.listing') }}" class="btn btn-primary">
+                                <a href="{{ url_for('jobs.listing') }}" class="btn btn-primary mt-3">
                                     <i class="fas fa-search"></i> Browse Jobs
                                 </a>
                             {% elif user_type == 'company' %}
-                                <a href="{{ url_for('company.applications') }}" class="btn btn-primary">
+                                <a href="{{ url_for('company.applications') }}" class="btn btn-primary mt-3">
                                     <i class="fas fa-file-alt"></i> View Applications
                                 </a>
                             {% endif %}

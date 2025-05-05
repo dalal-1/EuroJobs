@@ -57,7 +57,7 @@
                     {% endif %}
                     
                     {% if current_user.is_authenticated and user_type == 'student' %}
-                        <a href="{{ url_for('messages.new_conversation', user_id=company.user_id) }}" 
+                        <a href="{{ url_for('messages.conversation', user_id=company.user_id) }}" 
                            class="btn btn-outline-secondary">
                             <i class="fas fa-envelope"></i> Contact Company
                         </a>

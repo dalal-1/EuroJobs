@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
-from app import db
+from extensions import db  # Corrected to import from extensions
 from models import Student, Skill, Application, JobPost
 from forms import StudentProfileForm, SkillForm
 from utils import save_picture, save_cv

@@ -23,7 +23,7 @@
     <nav class="navbar navbar-expand-lg navbar-light fixed-top">
         <div class="container">
             <a class="navbar-brand" href="{{ url_for('home') }}">
-                <i class="fas fa-briefcase"></i> RecruitMe
+                <i class="fas fa-briefcase"></i> EuroJobs
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -164,16 +164,16 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-4">
-                    <h5>RecruitMe</h5>
+                    <h5>EuroJobs</h5>
                     <p>Connecting talent with opportunity.</p>
                 </div>
                 <div class="col-md-4">
                     <h5>Quick Links</h5>
                     <ul class="list-unstyled">
-                        <li><a href="{{ url_for('home') }}">Home</a></li>
-                        <li><a href="{{ url_for('jobs.listing') }}">Find Jobs</a></li>
+                        <li><a href="{{ url_for('home') }}"><i class="fas fa-home"></i> Home</a></li>
+                        <li><a href="{{ url_for('jobs.listing') }}"><i class="fas fa-briefcase"></i> Find Jobs</a></li>
                         {% if current_user.is_authenticated and user_type == 'company' %}
-                            <li><a href="{{ url_for('company.create_job') }}">Post a Job</a></li>
+                            <li><a href="{{ url_for('company.create_job') }}"><i class="fas fa-plus-circle"></i> Post a Job</a></li>
                         {% endif %}
                     </ul>
                 </div>
@@ -189,7 +189,7 @@
             </div>
             <hr>
             <div class="text-center">
-                <p>&copy; 2023 RecruitMe. All rights reserved.</p>
+                <p>&copy; 2023 EuroJobs. All rights reserved.</p>
             </div>
         </div>
     </footer>
